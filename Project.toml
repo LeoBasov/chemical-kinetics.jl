@@ -1,0 +1,4 @@
+name = "ChemicalKinetics"
+uuid = "929da9e8-5203-495f-90b2-577e54eea2cc"
+authors = ["Leo Basov <leo.basov@dlr.de>"]
+version = "0.1.0"
