@@ -1,0 +1,38 @@
+{
+    "name": "CO2",
+    "mass": 7.31e-26,
+    "vhs": {
+        "dref": 5.62e-10,
+        "Tref": 273.0,
+        "omega": 0.8,
+        "alpha": 1,
+        "Zrotinf": 18.1,
+        "T*": 91.5,
+        "C1": 25.48,
+        "C2": 177.98
+    },
+    "rotation": {
+        "dof": 2,
+        "Z": 5
+    },
+    "vibration":{
+        "dof": 4,
+        "modes": [
+            {
+                "Z": 20,
+                "theta": 1918.6,
+                "degen": 1
+            },
+            {
+                "Z": 20,
+                "theta": 3382.0,
+                "degen": 1
+            },
+            {
+                "Z": 20,
+                "theta": 959.0,
+                "degen": 2
+            }
+        ]
+    }
+}
