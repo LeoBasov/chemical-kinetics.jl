@@ -1,0 +1,15 @@
+name: ChemicalKinetics Test
+on: [push]
+jobs:
+  Setup-Julia:
+    runs-on: ubuntu-latest
+    steps:
+      - name: install-juliaup
+        uses: julia-actions/install-juliaup@v2
+        with:
+          channel: '1'
+  Run-Tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: julia -e "using Pkg; Pkg.activate(string('.')); Pkg.test()"
