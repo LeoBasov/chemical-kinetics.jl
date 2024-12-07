@@ -1,5 +1,5 @@
 module ChemicalKinetics
 
-greet() = print("Hello World!")
+include("Data.jl")
 
 end # module ChemicalKinetics

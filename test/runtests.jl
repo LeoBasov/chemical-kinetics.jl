@@ -1,10 +1,7 @@
 using ChemicalKinetics
 using Test
 
-function test_greet()
-    @test 1 == 1
-end
-
-@testset "ChemicalKinetics.jl" begin
-	test_greet()
+@testset "Data.jl" begin
+    species = ChemicalKinetics.Species("test")
+	data = ChemicalKinetics.State()
 end
