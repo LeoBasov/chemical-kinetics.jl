@@ -2,9 +2,9 @@ using ChemicalKinetics
 using Test
 
 @testset "ChemicalKinetics.jl" begin
-    add_species("../data/CO2.json")
-    add_species("../data/CH4.json")
-    add_species("../data/N2.json")
+    add_species!("../data/CO2.json")
+    add_species!("../data/CH4.json")
+    add_species!("../data/N2.json")
 
     @test 3 == length(ChemicalKinetics.state.species)
     

@@ -49,7 +49,7 @@ mutable struct State
     end
 end
 
-function add_species!(state, species)
+function _add_species!(state, species)
     state.mole_fractions[species.name] = 0.0
     state.Tvib[species.name] = zeros(length(species.vibmodes))
     state.species[species.name] = species
