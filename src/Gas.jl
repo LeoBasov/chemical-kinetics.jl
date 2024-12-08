@@ -36,3 +36,15 @@ mutable struct Species
         new("", 1.0, 0.0, 0.0, 0, VHS(), [])
     end
 end
+
+mutable struct State
+    T::Number
+    nrho::Number
+    mole_fractions::Dict{String, Number}
+    Tvib::Dict{String, Number}
+    species::Dict{String, Species}
+
+    function State()
+        return new(1.0, 1.0, Dict(), Dict(), Dict())
+    end
+end
