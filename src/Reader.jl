@@ -20,6 +20,16 @@ function read_species(file_name)
         species.vhs.Tstar = json["vhs"]["T*"]
         species.vhs.C1 = json["vhs"]["C1"]
         species.vhs.C2 = json["vhs"]["C2"]
+
+        for mode in json["vibration"]["modes"]
+            vibmode = Vibmode()
+
+            vibmode.theta = mode["theta"]
+            vibmode.degen = mode["degen"]
+            vibmode.Z = mode["Z"]
+            
+            push!(species.vibmodes, vibmode)
+        end
     end
 
     return species

@@ -41,10 +41,16 @@ mutable struct State
     T::Number
     nrho::Number
     mole_fractions::Dict{String, Number}
-    Tvib::Dict{String, Number}
+    Tvib::Dict{String, Vector{Number}}
     species::Dict{String, Species}
 
     function State()
         return new(1.0, 1.0, Dict(), Dict(), Dict())
     end
+end
+
+function add_species!(state, species)
+    state.mole_fractions[species.name] = 0.0
+    state.Tvib[species.name] = zeros(length(species.vibmodes))
+    state.species[species.name] = species
 end
