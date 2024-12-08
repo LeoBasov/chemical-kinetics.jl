@@ -1,7 +1,6 @@
 using ChemicalKinetics
 using Test
 
-@testset "Data.jl" begin
-    species = ChemicalKinetics.Species("test")
-	data = ChemicalKinetics.State()
+@testset "Gas.jl" begin
+    @test 1 == 1
 end

@@ -1,5 +1,5 @@
 module ChemicalKinetics
 
-include("Data.jl")
+include("Gas.jl")
 
 end # module ChemicalKinetics
