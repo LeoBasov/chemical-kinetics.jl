@@ -1,7 +1,28 @@
 using ChemicalKinetics
 using Test
 
+@testset "Solver.jl" begin
+    clear!()
+
+    add_species!("../data/CH4.json")
+    set_nrho!(1e22)
+    set_T!(300)
+    set_frac!("CH4", 1.0)
+
+    state = ChemicalKinetics.state
+
+    nu = ChemicalKinetics.calc_coll_freq(state.species["CH4"], state.nrho, state.T)
+    ekin_rot = ChemicalKinetics.calc_ekin_rot(state.T, state.mole_fractions, state.species)
+    T = ChemicalKinetics.calc_Tkin_rtot(ekin_rot, state.mole_fractions, state.species)
+
+    @test 3.6990640842564846e6 == nu
+    @test 1.2425841000000001e-20 == ekin_rot
+    @test 300 == T
+end
+
 @testset "ChemicalKinetics.jl" begin
+    clear!()
+
     add_species!("../data/CO2.json")
     add_species!("../data/CH4.json")
     add_species!("../data/N2.json")
