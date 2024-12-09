@@ -9,6 +9,8 @@ export clear!
 
 include("Gas.jl")
 include("Reader.jl")
+include("Solver.jl")
+include("Constants.jl")
 
 state = State()
 
