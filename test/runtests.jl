@@ -9,7 +9,7 @@ using Test
     set_T!(300)
     set_molefrac!("CH4", 1.0)
 
-    state = ChemicalKinetics.state
+    state = ChemicalKinetics._state
 
     nu = ChemicalKinetics.calc_coll_freq(state.species["CH4"], state.nrho, state.T)
     ekin_rot = ChemicalKinetics.calc_ekin_rot(state.T, state.mole_fractions, state.species)
@@ -27,15 +27,17 @@ end
     add_species!("../data/CH4.json")
     add_species!("../data/N2.json")
 
-    @test 3 == length(ChemicalKinetics.state.species)
-    
-    @test 0.0 == ChemicalKinetics.state.mole_fractions["CO2"]
-    @test 0.0 == ChemicalKinetics.state.mole_fractions["CH4"]
-    @test 0.0 == ChemicalKinetics.state.mole_fractions["N2"]
+    state = ChemicalKinetics._state
 
-    @test 3 == length(ChemicalKinetics.state.Tvib["CO2"])
-    @test 4 == length(ChemicalKinetics.state.Tvib["CH4"])
-    @test 1 == length(ChemicalKinetics.state.Tvib["N2"])
+    @test 3 == length(state.species)
+    
+    @test 0.0 == state.mole_fractions["CO2"]
+    @test 0.0 == state.mole_fractions["CH4"]
+    @test 0.0 == state.mole_fractions["N2"]
+
+    @test 3 == length(state.Tvib["CO2"])
+    @test 4 == length(state.Tvib["CH4"])
+    @test 1 == length(state.Tvib["N2"])
 end
 
 @testset "Reader.jl" begin
