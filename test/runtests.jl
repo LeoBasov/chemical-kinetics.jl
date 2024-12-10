@@ -2,12 +2,12 @@ using ChemicalKinetics
 using Test
 
 @testset "Solver.jl" begin
-    clear!()
+    initialize!(verbose = false)
 
     add_species!("../data/CH4.json")
     set_nrho!(1e22)
     set_T!(300)
-    set_frac!("CH4", 1.0)
+    set_molefrac!("CH4", 1.0)
 
     state = ChemicalKinetics.state
 
@@ -21,7 +21,7 @@ using Test
 end
 
 @testset "ChemicalKinetics.jl" begin
-    clear!()
+    initialize!(verbose = false)
 
     add_species!("../data/CO2.json")
     add_species!("../data/CH4.json")
