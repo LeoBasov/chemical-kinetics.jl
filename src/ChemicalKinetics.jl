@@ -26,10 +26,16 @@ end
 
 function set_nrho!(nrho)
     _state.nrho = nrho
+    if _verbose == true
+        println("set nrho to: " * string(_state.nrho))
+    end
 end
 
 function set_T!(T)
     _state.T = T
+    if _verbose == true
+        println("set nrTho to: " * string(_state.T))
+    end
 end
 
 function set_molefrac!(species_name, mole_frac)
