@@ -19,7 +19,7 @@ _verbose::Bool = true
 
 function execute(tmax)
     problem = setup_problem(_state, tmax)
-    return solve(problem, alg_hints = [:stiff], reltol = 1e-8)
+    return solve(problem, alg_hints = [:stiff])
 end
 
 function initialize!(;verbose::Bool = true)
