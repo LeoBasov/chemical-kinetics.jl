@@ -7,6 +7,7 @@ export set_molefrac!
 export add_species!
 export print_state
 export initialize!
+export execute
 
 include("Gas.jl")
 include("Reader.jl")
@@ -15,6 +16,11 @@ include("Constants.jl")
 
 _state::State = State()
 _verbose::Bool = true
+
+function execute(tmax)
+    problem = setup_problem(_state, tmax)
+    return solve(problem; alg_hints=[:stiff])
+end
 
 function initialize!(;verbose::Bool = true)
     global _state = State()
