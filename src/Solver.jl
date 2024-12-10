@@ -1,7 +1,25 @@
 using DifferentialEquations
 
-function f(u, p, t)
-    return 0.1*u
+function f(u, state, t)
+    T = calc_Tkin_rtot(u[1], state.mole_fractions, state.species)
+    du = zeros(length(u))
+    i = 1
+
+    for species in state.species
+        nu = calc_coll_freq(species.second, state.nrho, T)
+        eeq = calc_evib(T, species.second)
+        k = 1
+
+        for vibmode in species.second.vibmodes
+            tau = vibmode.Z / nu
+            du[1] = -(eeq[k] - u[i + 1]) / tau
+            du[i + 1] = (eeq[k] - u[i + 1]) / tau
+            i += 1
+            k += 1
+        end
+    end
+
+    return du
 end
 
 function setup_problem(state, tmax)
@@ -49,9 +67,15 @@ function calc_evib(Tvib, species)
     evib = []
 
     for i in eachindex(species.vibmodes)
-        frac = species.vibmodes[i].theta / Tvib[i]
-        e = max(0.0, species.vibmodes[i].degen * kb * frac / (exp(frac) - 1.0) * Tvib[i])
-        push!(evib, e)
+        if typeof(Tvib) <: Number
+            frac = species.vibmodes[i].theta / Tvib
+            e = max(0.0, species.vibmodes[i].degen * kb * frac / (exp(frac) - 1.0) * Tvib)
+            push!(evib, e)
+        else
+            frac = species.vibmodes[i].theta / Tvib[i]
+            e = max(0.0, species.vibmodes[i].degen * kb * frac / (exp(frac) - 1.0) * Tvib[i])
+            push!(evib, e)
+        end
     end
 
     return evib
