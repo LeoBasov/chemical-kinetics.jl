@@ -12,7 +12,7 @@ function f(u, state, t)
 
         for vibmode in species.second.vibmodes
             tau = vibmode.Z / nu
-            du[1] = -(eeq[k] - u[i + 1]) / tau
+            du[1] = -state.mole_fractions[species.first] * (eeq[k] - u[i + 1]) / tau
             du[i + 1] = (eeq[k] - u[i + 1]) / tau
             i += 1
             k += 1
