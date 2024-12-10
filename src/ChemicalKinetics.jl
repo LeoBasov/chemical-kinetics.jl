@@ -2,6 +2,7 @@ module ChemicalKinetics
 
 export set_nrho!
 export set_T!
+export set_Tvib!
 export set_molefrac!
 export add_species!
 export print_state
@@ -36,6 +37,24 @@ function set_T!(T)
     if _verbose == true
         println("set nrTho to: " * string(_state.T))
     end
+end
+
+function set_Tvib!(species_name, Tvib)
+    if typeof(Tvib) <: Number
+        for i in eachindex(_state.Tvib[species_name])
+            _state.Tvib[species_name][i] = Tvib
+        end
+    elseif typeof(Tvib) <: Array && size(Tvib) == size(_state.Tvib[species_name])
+        for i in eachindex(_state.Tvib[species_name])
+            _state.Tvib[species_name][i] = Tvib[i]
+        end
+    else
+        error("wrong Tvib format")
+    end
+
+    if _verbose == true
+        println("set Tvib of[" * species_name * "] to: " * string(_state.Tvib[species_name]))
+    end 
 end
 
 function set_molefrac!(species_name, mole_frac)
