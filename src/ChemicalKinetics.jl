@@ -19,7 +19,7 @@ _verbose::Bool = true
 
 function execute(tmax)
     problem = setup_problem(_state, tmax)
-    return solve(problem; alg_hints=[:stiff])
+    return solve(problem, alg_hints = [:stiff], reltol = 1e-8)
 end
 
 function initialize!(;verbose::Bool = true)
@@ -41,7 +41,7 @@ end
 function set_T!(T)
     _state.T = T
     if _verbose == true
-        println("set nrTho to: " * string(_state.T))
+        println("set T to: " * string(_state.T))
     end
 end
 
