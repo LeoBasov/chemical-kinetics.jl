@@ -1,19 +1,20 @@
 using DifferentialEquations
 
 function f(u, state, t)
-    T = calc_Tkin_rtot(u[1], state.mole_fractions, state.species)
+    T = calc_Tkin_rtot(u[1], state.mole_fractions, state.species) * kb
     du = zeros(length(u))
     i = 1
 
     for species in state.species
         nu = calc_coll_freq(species.second, state.nrho, T)
-        eeq = calc_evib(T, species.second)
+        eeq = calc_evib(T, species.second) / kb
         k = 1
 
         for vibmode in species.second.vibmodes
             tau = vibmode.Z / nu
-            du[1] = -state.mole_fractions[species.first] * (eeq[k] - u[i + 1]) / tau
-            du[i + 1] = (eeq[k] - u[i + 1]) / tau
+            de = (eeq[k] - u[i + 1]) / tau
+            du[1] = -state.mole_fractions[species.first] * de
+            du[i + 1] = de
             i += 1
             k += 1
         end
@@ -26,10 +27,10 @@ function setup_problem(state, tmax)
     u0::Vector{Float64} = []
     tspan = (0, tmax)
 
-    push!(u0, calc_ekin_rot(state.T, state.mole_fractions, state.species))
+    push!(u0, calc_ekin_rot(state.T, state.mole_fractions, state.species) / kb)
 
     for species in state.species
-        evib = calc_evib(state.Tvib[species.first], species.second)
+        evib = calc_evib(state.Tvib[species.first], species.second) / kb
     
         for e in evib
             push!(u0, e)
