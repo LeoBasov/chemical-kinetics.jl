@@ -1,4 +1,5 @@
 using DifferentialEquations
+using Roots
 
 function f(u, state, t)
     T = calc_Tkin_rtot(u[1], state.mole_fractions, state.species) * kb
@@ -62,6 +63,10 @@ function calc_Tkin_rtot(ekin_rot, mole_fractions, species)
     end 
 
     return 2.0 * ekin_rot / (3.0*kb + kb*frac_dof)
+end
+
+function calc_evib_kb(T, p)
+    p[2] * p[1] / (exp(p[1]/T) - 1.0)
 end
 
 function calc_evib(Tvib, species)

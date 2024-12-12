@@ -58,7 +58,11 @@ function get_T(N)
         push!(T[1], Tkin_Trot)
 
         for i in 2:R
-            Tvib = 0.0
+            theta = _state.species["CH4"].vibmodes[1].theta
+            degen = _state.species["CH4"].vibmodes[1].degen
+            f(x, p = (1, 1)) = calc_evib_kb(x, p) - _solution(tt)[i]
+            Z = ZeroProblem(f, 1000)
+            Tvib = solve(Z, Order1(), p=(theta, degen))
 
             push!(T[i], Tvib)
         end
