@@ -7,7 +7,9 @@ export set_molefrac!
 export add_species!
 export print_state
 export initialize!
-export execute
+export solve!
+export get_energy
+export get_T
 
 include("Gas.jl")
 include("Reader.jl")
@@ -16,15 +18,66 @@ include("Constants.jl")
 
 _state::State = State()
 _verbose::Bool = true
+_solution = nothing
+_tmax::Number = 0.0
 
-function execute(tmax)
-    problem = setup_problem(_state, tmax)
-    return solve(problem, alg_hints = [:stiff])
+function get_energy(N)
+    R = size(_solution)[1]
+    t = []
+    e = []
+
+    for i in 1:R
+        push!(e, [])
+    end
+
+    for tt in range(0, _tmax, N)
+        push!(t, tt)
+
+        for i in 1:R
+            push!(e[i], _solution(tt)[i])
+        end
+    end
+
+    return t, e
+end
+
+function get_T(N)
+    R = size(_solution)[1]
+    t = []
+    T = []
+
+    for i in 1:R
+        push!(T, [])
+    end
+
+    for tt in range(0, _tmax, N)
+        push!(t, tt)
+
+        Tkin_Trot = calc_Tkin_rtot(_solution(tt)[1] * kb, _state.mole_fractions, _state.species)
+
+        push!(T[1], Tkin_Trot)
+
+        for i in 2:R
+            Tvib = 0.0
+
+            push!(T[i], Tvib)
+        end
+    end
+
+    return t, T
+end
+
+function solve!(tmax)
+    global _tmax = tmax
+    problem = setup_problem(_state, _tmax)
+    global _solution =  solve(problem, alg_hints = [:stiff])
 end
 
 function initialize!(;verbose::Bool = true)
     global _state = State()
     global _verbose = verbose
+    global _solution = nothing
+    global _tmax = 0.0
 end
 
 function  set_verbosity!(verbose)
