@@ -46,10 +46,10 @@ function calc_coll_freq(species, nrho, temp)
 end
 
 function calc_ekin_rot(T, mole_fractions, species)
-    e = 1.5 * kb * T
+    e = 0.0
 
     for spec in species
-        e += 0.5 * kb * mole_fractions[spec.first] * T * spec.second.dof_rot
+        e += mole_fractions[spec.first] * (0.5 * kb * T * spec.second.dof_rot + 1.5 * kb * T)
     end
 
     return e
