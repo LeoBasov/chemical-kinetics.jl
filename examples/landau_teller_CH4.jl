@@ -9,7 +9,7 @@ set_Tvib!("CH4", [5000, 6000, 7000, 8000])
 
 solve!(3e-5)
 
-t, T = get_T(300)
+t, T = get_T(300, "CH4")
 
 display(plot(t, T))
 

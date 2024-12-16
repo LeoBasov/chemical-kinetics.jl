@@ -41,7 +41,7 @@ function get_energy(N)
     return t, e
 end
 
-function get_T(N)
+function get_T(N, species_name)
     R = size(_solution)[1]
     t = []
     T = []
@@ -58,8 +58,8 @@ function get_T(N)
         push!(T[1], Tkin_Trot)
 
         for i in 2:R
-            theta = _state.species["CH4"].vibmodes[i - 1].theta
-            degen = _state.species["CH4"].vibmodes[i - 1].degen
+            theta = _state.species[species_name].vibmodes[i - 1].theta
+            degen = _state.species[species_name].vibmodes[i - 1].degen
             f(x, p = (1, 1)) = calc_evib_kb(x, p) - _solution(tt)[i]
             Z = ZeroProblem(f, 1000)
             Tvib = solve(Z, Order1(), p=(theta, degen))
