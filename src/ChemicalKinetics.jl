@@ -20,7 +20,6 @@ _state::State = State()
 _verbose::Bool = true
 _solution = nothing
 _tmax::Number = 0.0
-_solver_data::SolverData = SolverData()
 
 function get_energy(N)
     R = size(_solution)[1]
@@ -61,7 +60,7 @@ function get_T(N, species_name)
         for i in 1:Nvibmode
             theta = _state.species[species_name].vibmodes[i].theta
             degen = _state.species[species_name].vibmodes[i].degen
-            f(x, p = (1, 1)) = calc_evib_kb(x, p) - _solution(tt)[i + _solver_data.offset[species_name]]
+            f(x, p = (1, 1)) = calc_evib_kb(x, p) - _solution(tt)[i + _state.offset[species_name]]
             Z = ZeroProblem(f, 1000)
             Tvib = solve(Z, Order1(), p=(theta, degen))
 
@@ -74,7 +73,7 @@ end
 
 function solve!(tmax)
     global _tmax = tmax
-    problem = setup_problem!(_solver_data, _state, _tmax)
+    problem = setup_problem!(_state, _tmax)
     global _solution =  solve(problem, alg_hints = [:stiff])
 end
 
@@ -83,7 +82,6 @@ function initialize!(;verbose::Bool = true)
     global _verbose = verbose
     global _solution = nothing
     global _tmax = 0.0
-    global _solver_data = SolverData()
 end
 
 function  set_verbosity!(verbose)

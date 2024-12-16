@@ -43,9 +43,10 @@ mutable struct State
     mole_fractions::Dict{String, Number}
     Tvib::Dict{String, Vector{Number}}
     species::Dict{String, Species}
+    offset::Dict{String, Integer}
 
     function State()
-        return new(1.0, 1.0, Dict(), Dict(), Dict())
+        return new(1.0, 1.0, Dict(), Dict(), Dict(), Dict())
     end
 end
 
