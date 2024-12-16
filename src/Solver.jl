@@ -2,7 +2,7 @@ using DifferentialEquations
 using Roots
 
 function f(u, state, t)
-    T = calc_Tkin_rtot(u[1], state.mole_fractions, state.species) * kb
+    T = u[1]
     du = zeros(length(u))
 
     for species in state.species
@@ -15,7 +15,7 @@ function f(u, state, t)
             vibmode = species.second.vibmodes[v]
             tau = vibmode.Z / nu
             de = (eeq[v] - u[v + offset]) / tau
-            du[1] = -state.mole_fractions[species.first] * de
+            du[1] = -state.mole_fractions[species.first] * de * _state.Tfrac
             du[v + offset] = de
         end
     end
@@ -28,7 +28,7 @@ function setup_problem!(state, tmax)
     tspan = (0, tmax)
     offset::Integer = 1
 
-    push!(u0, calc_ekin_rot(state.T, state.mole_fractions, state.species) / kb)
+    push!(u0, state.T)
 
     for species in state.species
         evib = calc_evib(state.Tvib[species.first], species.second) / kb
@@ -45,26 +45,6 @@ end
 
 function calc_coll_freq(species, nrho, temp)
     return 4.0 * species.vhs.dref^2 * nrho * sqrt(pi * kb * species.vhs.Tref / species.mass) * (temp/species.vhs.Tref)^(1.0 - species.vhs.omega)
-end
-
-function calc_ekin_rot(T, mole_fractions, species)
-    e = 0.0
-
-    for spec in species
-        e += mole_fractions[spec.first] * (0.5 * kb * T * spec.second.dof_rot + 1.5 * kb * T)
-    end
-
-    return e
-end
-
-function calc_Tkin_rtot(ekin_rot, mole_fractions, species)
-    frac_dof = 0.0
-
-    for spec in species
-        frac_dof += mole_fractions[spec.first] * spec.second.dof_rot
-    end 
-
-    return 2.0 * ekin_rot / (3.0*kb + kb*frac_dof)
 end
 
 function calc_evib_kb(T, p)

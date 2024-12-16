@@ -52,10 +52,7 @@ function get_T(N, species_name)
 
     for tt in range(0, _tmax, N)
         push!(t, tt)
-
-        Tkin_Trot = calc_Tkin_rtot(_solution(tt)[1] * kb, _state.mole_fractions, _state.species)
-
-        push!(T[1], Tkin_Trot)
+        push!(T[1], _solution(tt)[1])
 
         for i in 1:Nvibmode
             theta = _state.species[species_name].vibmodes[i].theta
@@ -97,6 +94,14 @@ end
 
 function set_T!(T)
     _state.T = T
+    _state.Tfrac = 1.5
+
+    for species in _state.species
+        _state.Tfrac += 0.5 * _state.mole_fractions[species.first] * species.second.dof_rot
+    end
+
+    _state.Tfrac = 1.0 / _state.Tfrac
+
     if _verbose == true
         println("set T to: " * string(_state.T))
     end
