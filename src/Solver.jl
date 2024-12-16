@@ -1,6 +1,14 @@
 using DifferentialEquations
 using Roots
 
+mutable struct SolverData
+    offset::Dict{String, Integer}
+
+    function SolverData()
+        new(Dict())
+    end
+end
+
 function f(u, state, t)
     T = calc_Tkin_rtot(u[1], state.mole_fractions, state.species) * kb
     du = zeros(length(u))
@@ -24,14 +32,17 @@ function f(u, state, t)
     return du
 end
 
-function setup_problem(state, tmax)
+function setup_problem!(solver_data, state, tmax)
     u0::Vector{Float64} = []
     tspan = (0, tmax)
+    offset::Integer = 1
 
     push!(u0, calc_ekin_rot(state.T, state.mole_fractions, state.species) / kb)
 
     for species in state.species
         evib = calc_evib(state.Tvib[species.first], species.second) / kb
+        solver_data.offset[species.first] = offset
+        offset += length(evib)
     
         for e in evib
             push!(u0, e)
