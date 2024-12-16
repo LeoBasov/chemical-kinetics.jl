@@ -4,20 +4,19 @@ using Roots
 function f(u, state, t)
     T = calc_Tkin_rtot(u[1], state.mole_fractions, state.species) * kb
     du = zeros(length(u))
-    i = 1
 
     for species in state.species
         nu = calc_coll_freq(species.second, state.nrho, T)
         eeq = calc_evib(T, species.second) / kb
-        k = 1
+        N_vibmodes = length(species.second.vibmodes)
+        offset = state.offset[species.first]
 
-        for vibmode in species.second.vibmodes
+        for v in 1:N_vibmodes
+            vibmode = species.second.vibmodes[v]
             tau = vibmode.Z / nu
-            de = (eeq[k] - u[i + 1]) / tau
+            de = (eeq[v] - u[v + offset]) / tau
             du[1] = -state.mole_fractions[species.first] * de
-            du[i + 1] = de
-            i += 1
-            k += 1
+            du[v + offset] = de
         end
     end
 
