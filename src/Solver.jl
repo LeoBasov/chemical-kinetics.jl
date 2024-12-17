@@ -70,3 +70,29 @@ function calc_evib(Tvib, species, mole_fraction)
 
     return mole_fraction * evib
 end
+
+function calc_etot(state)
+    ekin = state.T / state.Tfrac * kb
+    evib = []
+
+    for species in state.species
+        Tvib = state.Tvib[species.first]
+        mole_fraction = state.mole_fractions[species.first]
+        evib = vcat(evib, calc_evib(Tvib, species.second, mole_fraction))
+    end
+
+    return ekin + sum(evib)
+end
+
+function calc_etot(T, state)
+    ekin = T / state.Tfrac * kb
+    evib = []
+
+    for species in state.species
+        Tvib = T
+        mole_fraction = state.mole_fractions[species.first]
+        evib = vcat(evib, calc_evib(Tvib, species.second, mole_fraction))
+    end
+
+    return ekin + sum(evib)
+end
