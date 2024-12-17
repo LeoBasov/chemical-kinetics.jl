@@ -10,14 +10,14 @@ function f(u, state, t)
         nu = calc_coll_freq(species.second, state.nrho, T) * t_tilde
         eeq = calc_evib(T, species.second, mole_fraction) / kb
         N_vibmodes = length(species.second.vibmodes)
-        offset = state.offset[species.first]
+        evib_offset = state.evib_offset[species.first]
 
         for v in 1:N_vibmodes
             vibmode = species.second.vibmodes[v]
             tau = vibmode.Z / nu
-            de = (eeq[v] - u[v + offset]) / tau
+            de = (eeq[v] - u[v + evib_offset]) / tau
             du[1] -= de * _state.Tfrac
-            du[v + offset] = de
+            du[v + evib_offset] = de
         end
     end
 
@@ -27,15 +27,15 @@ end
 function setup_problem!(state, tmax)
     u0::Vector{Float64} = []
     tspan = (0, tmax)
-    offset::Integer = 1
+    evib_offset::Integer = 1
 
     push!(u0, state.T)
 
     for species in state.species
         mole_fraction = state.mole_fractions[species.first]
         evib = calc_evib(state.Tvib[species.first], species.second, mole_fraction) / kb
-        state.offset[species.first] = offset
-        offset += length(evib)
+        state.evib_offset[species.first] = evib_offset
+        evib_offset += length(evib)
     
         for e in evib
             push!(u0, e)
