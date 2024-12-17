@@ -15,7 +15,7 @@ function f(u, state, t)
         for v in 1:N_vibmodes
             vibmode = species.second.vibmodes[v]
             tau = vibmode.Z / nu
-            de = (eeq[v] - u[v + evib_offset]) / tau # this part has to be modified as I am comparing energies based on old mole fractions with new ones
+            de = (eeq[v] - u[v + evib_offset]) / tau # + dn_dt : this part has to be modified as I am comparing energies based on old mole fractions with new ones
             du[1] -= de * _state.Tfrac
             du[v + evib_offset] = de
         end
