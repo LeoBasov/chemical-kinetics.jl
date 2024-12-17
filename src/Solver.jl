@@ -6,7 +6,7 @@ function f(u, state, t)
     du = zeros(length(u))
 
     for species in state.species
-        mole_fraction = state.mole_fractions[species.first]
+        mole_fraction = u[1 + state.molefrac_offset[species.first]]
         nu = calc_coll_freq(species.second, state.nrho, T) * t_tilde
         eeq = calc_evib(T, species.second, mole_fraction) / kb
         N_vibmodes = length(species.second.vibmodes)
@@ -15,11 +15,14 @@ function f(u, state, t)
         for v in 1:N_vibmodes
             vibmode = species.second.vibmodes[v]
             tau = vibmode.Z / nu
-            de = (eeq[v] - u[v + evib_offset]) / tau
+            de = (eeq[v] - u[v + evib_offset]) / tau # this part has to be modified as I am comparing energies based on old mole fractions with new ones
             du[1] -= de * _state.Tfrac
             du[v + evib_offset] = de
         end
     end
+
+    #du[1 + state.molefrac_offset["CH4"]] = 0.1 * u[1 + state.molefrac_offset["CH4"]] * u[1 + state.molefrac_offset["CO2"]]
+    #du[1 + state.molefrac_offset["CO2"]] = -0.1 * u[1 + state.molefrac_offset["CH4"]] * u[1 + state.molefrac_offset["CO2"]]
 
     return du
 end
