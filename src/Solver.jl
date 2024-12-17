@@ -28,6 +28,7 @@ function setup_problem!(state, tmax)
     u0::Vector{Float64} = []
     tspan = (0, tmax)
     evib_offset::Integer = 1
+    molefrac_offset::Integer = 1
 
     push!(u0, state.T)
 
@@ -40,6 +41,14 @@ function setup_problem!(state, tmax)
         for e in evib
             push!(u0, e)
         end
+    end
+
+    molefrac_offset = evib_offset
+
+    for species in state.species
+        state.molefrac_offset[species.first] = molefrac_offset
+        molefrac_offset += 1
+        push!(u0, state.mole_fractions[species.first])
     end
 
     return ODEProblem(f, u0, tspan, state);
