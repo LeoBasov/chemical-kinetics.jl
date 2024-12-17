@@ -80,7 +80,7 @@ function get_T(N, species_name)
         push!(T[1], _solution(tt)[1])
 
         for i in 1:Nvibmode
-            mole_fraciont = _state.mole_fractions[species_name]
+            mole_fraciont = _solution(tt)[1 + _state.molefrac_offset[species_name]]
             theta = _state.species[species_name].vibmodes[i].theta
             degen = _state.species[species_name].vibmodes[i].degen
             f(x, p = (1, 1)) = mole_fraciont * calc_evib_kb(x, p) - _solution(tt)[i + _state.evib_offset[species_name]]
