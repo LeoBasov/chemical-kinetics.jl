@@ -31,10 +31,12 @@ function get_energy(N)
     end
 
     for tt in range(0, _tmax, N)
-        push!(t, tt)
+        push!(t, tt * t_tilde)
 
-        for i in 1:R
-            push!(e[i], _solution(tt)[i])
+        push!(e[1], _solution(tt)[1] / _state.Tfrac)
+
+        for i in 2:R
+            push!(e[i], _solution(tt)[i] )
         end
     end
 
