@@ -1,0 +1,43 @@
+{
+    "name": "CH4",
+    "mass": 2.664e-26,
+    "vhs": {
+        "dref": 3.64e-10,
+        "Tref": 298.0,
+        "omega": 0.7,
+        "alpha": 1,
+        "Zrotinf": 0,
+        "T*": 0,
+        "C1": 0,
+        "C2": 0
+    },
+    "rotation": {
+        "dof": 3,
+        "Z": 10
+    },
+    "vibration":{
+        "dof": 8,
+        "modes": [
+            {
+                "Z": 50,
+                "theta": 4194.9,
+                "degen": 1
+            },
+            {
+                "Z": 50,
+                "theta": 2206.0,
+                "degen": 2
+            },
+            {
+                "Z": 50,
+                "theta": 4341.6,
+                "degen": 3
+            },
+            {
+                "Z": 50,
+                "theta": 1878.1,
+                "degen": 3
+            }
+        ]
+    }
+}
