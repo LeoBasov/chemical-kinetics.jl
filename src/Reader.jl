@@ -34,3 +34,14 @@ function read_species(file_name)
 
     return species
 end
+
+function read_reactions(file_name)
+    reactions = []
+    
+    open(file_name, "r") do file
+        json = JSON.parse(file)
+        reaction = Reaction()
+    end
+
+    return reactions
+end

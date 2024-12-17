@@ -68,4 +68,8 @@ end
     @test 1 == species.vibmodes[1].degen
     @test 1 == species.vibmodes[2].degen
     @test 2 == species.vibmodes[3].degen
+
+    reactions = ChemicalKinetics.read_reactions("../data/reactions.json")
+
+    @test 2 == length(reactions)
 end
