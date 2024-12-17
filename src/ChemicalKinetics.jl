@@ -65,11 +65,11 @@ function get_T(N, species_name)
         end
     end
 
-    return t, T
+    return t * t_tilde, T
 end
 
 function solve!(tmax)
-    global _tmax = tmax
+    global _tmax = tmax / t_tilde
     problem = setup_problem!(_state, _tmax)
     global _solution =  solve(problem, alg_hints = [:stiff])
 end
