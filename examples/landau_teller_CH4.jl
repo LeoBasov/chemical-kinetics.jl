@@ -29,4 +29,8 @@ plot!(t, T2)
 
 display(plot!(t, Teq, line = (3, :dashdot)))
 
+t, X = get_molefrac(300)
+
+display(plot(t, X))
+
 println("done")
