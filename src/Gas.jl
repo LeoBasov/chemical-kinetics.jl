@@ -37,6 +37,19 @@ mutable struct Species
     end
 end
 
+mutable struct Reaction
+    reactants::Dict{String, Number}
+    products::Dict{String, Number}
+    A::Number
+    B::Number
+    Ea::Number
+    DeltaE::Number
+
+    function Reaction()
+        new(Dict(), Dict(), 0.0, 0.0, 0.0, 0.0)
+    end
+end
+
 mutable struct State
     T::Number
     Tfrac::Number
