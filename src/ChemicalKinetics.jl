@@ -10,6 +10,7 @@ export initialize!
 export solve!
 export get_energy
 export get_T
+export get_molefrac
 
 include("Gas.jl")
 include("Reader.jl")
@@ -20,6 +21,28 @@ _state::State = State()
 _verbose::Bool = true
 _solution = nothing
 _tmax::Number = 0.0
+
+function get_molefrac(N)
+    t = []
+    X = []
+
+    for i in 1:length(_state.species)
+        push!(X, [])
+    end
+
+    for tt in range(0, _tmax, N)
+        push!(t, tt * t_tilde)
+        i = 1
+
+        for species in _state.species
+            molde_fraction = _solution(tt)[1 + _state.molefrac_offset[species.first]]
+            push!(X[i], molde_fraction)
+            i += 1
+        end
+    end
+
+    return t, X
+end
 
 function get_energy(N)
     R = size(_solution)[1]
