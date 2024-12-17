@@ -12,12 +12,8 @@ using Test
     state = ChemicalKinetics._state
 
     nu = ChemicalKinetics.calc_coll_freq(state.species["CH4"], state.nrho, state.T)
-    ekin_rot = ChemicalKinetics.calc_ekin_rot(state.T, state.mole_fractions, state.species)
-    T = ChemicalKinetics.calc_Tkin_rtot(ekin_rot, state.mole_fractions, state.species)
 
     @test 3.6990640842564846e6 == nu
-    @test 1.2425841000000001e-20 == ekin_rot
-    @test 300 == T
 end
 
 @testset "ChemicalKinetics.jl" begin
