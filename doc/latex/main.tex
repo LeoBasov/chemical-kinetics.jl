@@ -1,0 +1,45 @@
+\documentclass{scrreprt}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{amsmath}
+
+\title{Chemical Reactor}
+\author{Leo Basov}
+\date{December 2024}
+
+\begin{document}
+
+\maketitle
+
+\chapter{Introduction}
+The total energy of the system is given as
+\begin{equation}
+	E_{tot} = E_{kin} + E_{rot} + E_{vib}
+\end{equation}
+the individual components can be expressed as assuming a common kinetic temperature of the mixture
+\begin{align}
+	E_{kin} &= \frac{3}{2} k_B T \sum_i N_i\\
+	E_{rot} &= k_B \sum_i^{N_s} N_i \frac{\xi_i}{2} T_i\\
+	E_{vib} &= k_B \sum_i^{N_s} \left( N_i \sum_m g_{i, m} \frac{\theta_{i, m}}{\exp(\theta_{i, m} / T_{i, m}) - 1} \right)
+\end{align}
+where the index $i$ denotes the species and $m$ the vibrational mode.
+We assume a constant volume thus we can work with per volume quantities and replace the particle number $N$ with number density $n$.
+Assuming a thermalized rotational temperature we can write the per particle energy as
+\begin{align}
+	e_{kr, i} &= \frac{3 + \xi_i}{2} k_B T\\
+	e_{v, i, m} &= k_B g_{m, i} \frac{\theta_{i, m}}{\exp(\theta_{i, m} / T_{i, m}) - 1}
+\end{align}
+and therefore
+\begin{align}
+	E_{kin} + E_{rot} &= \sum_i n_i e_{kr, i}\\
+	E_{vib} &= \sum_i \left( n_i \sum_m e_{v, i, m}\right)
+\end{align}
+The change of the total energy in the system is then assuming that the total energy of the system can change only due to chemical reactions is
+\begin{align}
+	\frac{\partial E_{kin} + E_{rot}}{\partial t} &= -\sum_i \sum_m \frac{\partial E_{vib, i, m}}{\partial t} + \Delta E_R\\
+	\frac{\partial E_{vib, i, m}}{\partial t} &= \frac{\partial n_i}{\partial t} e_{v, i, m} + n_i  \frac{\partial e_{v, i, m}}{\partial t}\\
+	\Delta E_R &= \sum_r \nu_r \Delta e_r\\
+	\frac{\partial n_i}{\partial t} &= \sum_k n_i n_k r_{i, k}(T)\\
+	\frac{\partial e_{v, i, m}}{\partial t} &= \frac{e_{v, i, m}(T) - e_{v, i, m}(T_{i,m})}{\tau_{i, m}}.
+\end{align}
+
+\end{document}
