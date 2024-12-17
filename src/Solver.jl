@@ -1,6 +1,8 @@
 using DifferentialEquations
 using Roots
 
+# TODO: this has to be rewritten useing number densities instead of mole fractions as the total number denisty changes
+
 function f(u, state, t)
     T = u[1]
     du = zeros(length(u))
@@ -16,7 +18,7 @@ function f(u, state, t)
             vibmode = species.second.vibmodes[v]
             tau = vibmode.Z / nu
             de = (eeq[v] - u[v + evib_offset]) / tau # + dn_dt : this part has to be modified as I am comparing energies based on old mole fractions with new ones
-            du[1] -= de * _state.Tfrac
+            du[1] -= de * _state.Tfrac # TODO: Tfrac con NOT be used like this as it requires constant mole fractions
             du[v + evib_offset] = de
         end
     end
