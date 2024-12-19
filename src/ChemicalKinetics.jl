@@ -11,6 +11,7 @@ export execute!
 export get_energy
 export get_T
 export get_molefrac
+export read_reaction!
 
 include("Gas.jl")
 include("Reader.jl")
@@ -21,6 +22,12 @@ _state::State = State()
 _verbose::Bool = true
 _solution = nothing
 _tmax::Number = 0.0
+
+function read_reaction!(file_name)
+    global _state.reactions = read_reactions(file_name)
+
+    println(string(length(_state.reactions)) * " reactions added")
+end
 
 function get_molefrac(N)
     t = []
@@ -95,6 +102,28 @@ function get_T(N, species_name)
 end
 
 function execute!(tmax)
+    reactions = []
+    N_pre = length(_state.reactions)
+
+    for reaction in _state.reactions
+        good = true
+
+        for species_name in keys(reaction.stochio_coeff)
+            if !(species_name in keys(_state.species))
+                good = false
+                break
+            end
+        end
+
+        if good == true
+            push!(reactions, reaction)
+        end
+    end
+
+    _state.reactions = reactions
+
+    println(string(N_pre - length(_state.reactions)) * " reactions removed due to missing species")
+
     global _tmax = tmax / t_tilde
     problem = setup_problem!(_state, _tmax)
     global _solution =  solve(problem, alg_hints = [:stiff])

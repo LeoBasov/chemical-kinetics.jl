@@ -7,9 +7,20 @@ function f(u, state, t)
     T = u[1]
     du = zeros(length(u))
     Tfrac = calc_Tfrac(u, state)
+    
+    for reaction in state.reactions
+        k = reaction.A * T^reaction.B * exp(-reaction.Ea/(kb*T))
+        nu = k
 
-    #du[1 + state.molefrac_offset["O2"]] = -0.1 * u[1 + state.molefrac_offset["O2"]] * u[1 + state.molefrac_offset["O"]]
-    #du[1 + state.molefrac_offset["O"]] = 0.2 * u[1 + state.molefrac_offset["O2"]] * u[1 + state.molefrac_offset["O"]]
+        for reactant in reaction.reactants
+            mole_fraction = u[1 + state.molefrac_offset[reactant]]
+            nu *= mole_fraction
+        end
+
+        for species_name in keys(reaction.stochio_coeff)
+            du[1 + state.molefrac_offset[species_name]] += reaction.stochio_coeff[species_name] * nu
+        end
+    end
 
     for species in state.species
         mole_fraction = u[1 + state.molefrac_offset[species.first]]
