@@ -11,12 +11,14 @@ set_T!(10000)
 set_nrho!(1e22)
 set_Tvib!("O2", 5000)
 
+read_reaction!("data/reactions.json")
+
 e0 = ChemicalKinetics.calc_etot(ChemicalKinetics._state)
 f(T, p=ChemicalKinetics._state) = ChemicalKinetics.calc_etot(T, p) / e0 - 1.0
 
 Teq = find_zero(f, 5000)
 
-execute!(1e-2)
+execute!(1e-1)
 
 t, TO2 = get_T(300, "O2")
 
