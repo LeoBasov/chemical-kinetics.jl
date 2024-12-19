@@ -19,7 +19,7 @@ function f(u, state, t)
             vibmode = species.second.vibmodes[v]
             tau = vibmode.Z / nu
             de = (eeq[v] - u[v + evib_offset]) / tau # + dn_dt : this part has to be modified as I am comparing energies based on old mole fractions with new ones
-            du[1] -= de * Tfrac # TODO: Tfrac con NOT be used like this as it requires constant mole fractions
+            du[1] -= de * Tfrac
             du[v + evib_offset] = de
         end
     end
