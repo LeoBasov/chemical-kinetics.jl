@@ -1,0 +1,28 @@
+{
+    "name": "NO",
+    "mass": 4.98E-26,
+    "vhs": {
+        "dref": 4.0E-10,
+        "Tref": 273.15,
+        "omega": 0.8,
+        "alpha": 1.0,
+        "Zrotinf": 7.5,
+        "T*": 119,
+        "C1": 9.1,
+        "C2": 220.0
+    },
+    "rotation": {
+        "dof": 2,
+        "Z": 5
+    },
+    "vibration":{
+        "dof": 2,
+        "modes": [
+            {
+                "Z": 1400,
+                "theta": 2719.0,
+                "degen": 1
+            }
+        ]
+    }
+}
