@@ -8,7 +8,8 @@ function f(u, state, t)
     du = zeros(length(u))
     Tfrac = calc_Tfrac(u, state)
 
-    #du[1 + state.molefrac_offset["O2"]] = -0.1 * u[1 + state.molefrac_offset["O2"]]
+    #du[1 + state.molefrac_offset["O2"]] = -0.1 * u[1 + state.molefrac_offset["O2"]] * u[1 + state.molefrac_offset["O"]]
+    #du[1 + state.molefrac_offset["O"]] = 0.2 * u[1 + state.molefrac_offset["O2"]] * u[1 + state.molefrac_offset["O"]]
 
     for species in state.species
         mole_fraction = u[1 + state.molefrac_offset[species.first]]
@@ -25,9 +26,6 @@ function f(u, state, t)
             du[v + evib_offset] = de + du[1 + state.molefrac_offset[species.first]] * u[v + evib_offset] / mole_fraction
         end
     end
-
-    #du[1 + state.molefrac_offset["CH4"]] = 0.1 * u[1 + state.molefrac_offset["CH4"]] * u[1 + state.molefrac_offset["CO2"]]
-    #du[1 + state.molefrac_offset["CO2"]] = -0.1 * u[1 + state.molefrac_offset["CH4"]] * u[1 + state.molefrac_offset["CO2"]]
 
     return du
 end
