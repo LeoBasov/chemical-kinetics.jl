@@ -19,12 +19,10 @@ Teq = find_zero(f, 5000)
 execute!(1e-2)
 
 t, TO2 = get_T(300, "O2")
-t, TO = get_T(300, "O")
 
 Teq = ones(length(t)) * Teq
 
 plot(t, Teq, line = (3, :dashdot))
-plot!(t, TO2)
 display(plot!(t, TO2))
 
 t, X = get_molefrac(300)
