@@ -1,6 +1,7 @@
 \documentclass{scrreprt}
 \usepackage{graphicx} % Required for inserting images
 \usepackage{amsmath}
+\usepackage{physics}
 
 \title{Chemical Reactor}
 \author{Leo Basov}
@@ -30,13 +31,13 @@ Assuming a thermalized rotational temperature we can write the per particle ener
 \end{align}
 and therefore
 \begin{align}
-	E_{kin} + E_{rot} &= \sum_i n_i e_{kr, i}\\
+	\underbrace{E_{kin} + E_{rot}}_{E_{kr}} &= \sum_i n_i e_{kr, i} = T k_B \sum_i n_i \frac{3 + \xi_i}{2}\\
 	E_{vib} &= \sum_i \left( n_i \sum_m e_{v, i, m}\right)
 \end{align}
-The change of the total energy in the system is then assuming that the total energy of the system can change only due to chemical reactions is
+We have
 \begin{align}
-	\frac{\partial E_{kin} + E_{rot}}{\partial t} &= -\sum_i \sum_m \frac{\partial E_{vib, i, m}}{\partial t} + \Delta E_R\\
-	\frac{\partial E_{vib, i, m}}{\partial t} &= \frac{\partial n_i}{\partial t} e_{v, i, m} + n_i  \frac{\partial e_{v, i, m}}{\partial t}\\
+	\pdv{E_{kr}}{t} &= \sum_i \left( \pdv{n_i}{t} e_{kr, i} + n_i \pdv{e_{kr, i}}{t} \right) + \Delta E_R\\
+	\pdv{E_{vib}}{t} &= \sum_i \sum_m \left( \pdv{n_i}{t} e_{v, i, m} + n_i \pdv{e_{v, i, m}}{t} \right)\\
 	\Delta E_R &= \sum_r \nu_r \Delta e_r\\
 	\frac{\partial n_i}{\partial t} &= \sum_k n_i n_k r_{i, k}(T)\\
 	\frac{\partial e_{v, i, m}}{\partial t} &= \frac{e_{v, i, m}(T) - e_{v, i, m}(T_{i,m})}{\tau_{i, m}}.
