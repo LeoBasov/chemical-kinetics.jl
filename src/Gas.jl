@@ -1,12 +1,13 @@
 mutable struct Reaction
     stochio_coeff::Dict{String, Number}
+    reactants::Vector{String}
     A::Number
     B::Number
     Ea::Number
     DeltaE::Number
 
     function Reaction()
-        new(Dict(), 0.0, 0.0, 0.0, 0.0)
+        new(Dict(), [], 0.0, 0.0, 0.0, 0.0)
     end
 end
 

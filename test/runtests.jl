@@ -81,4 +81,7 @@ end
     @test -1.5 == reactions[1].B
     @test 8.197e-19 == reactions[1].Ea
     @test -8.197e-19 == reactions[1].DeltaE
+
+    @test "O2" == reactions[1].reactants[1]
+    @test "N" == reactions[1].reactants[2]
 end

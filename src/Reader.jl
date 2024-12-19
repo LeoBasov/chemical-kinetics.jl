@@ -55,6 +55,7 @@ function read_reactions(file_name)
                         reaction.stochio_coeff[elem] -= 1
                     else
                         reaction.stochio_coeff[elem] = -1
+                        push!(reaction.reactants, elem)
                     end
                 elseif pre ==false && !(elem == "")
                     if elem in keys(reaction.stochio_coeff)
