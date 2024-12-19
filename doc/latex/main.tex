@@ -40,7 +40,8 @@ We have
 	\pdv{E_{vib}}{t} &= \sum_i \sum_m \left( \pdv{n_i}{t} e_{v, i, m} + n_i \pdv{e_{v, i, m}}{t} \right)\\
 	\Delta E_R &= \sum_r \nu_r \Delta e_r\\
 	\frac{\partial n_i}{\partial t} &= \sum_k n_i n_k r_{i, k}(T)\\
-	\frac{\partial e_{v, i, m}}{\partial t} &= \frac{e_{v, i, m}(T) - e_{v, i, m}(T_{i,m})}{\tau_{i, m}}.
+	\pdv{e_{kr, i}}{t} &= -\sum_m \pdv{e_{v, i, m}}{t}\\
+	\frac{\partial e_{v, i, m}}{\partial t} &= \frac{e_{v, i, m}(T) - e_{v, i, m}(T_{i,m})}{\tau_{i, m}}
 \end{align}
 
 \end{document}
