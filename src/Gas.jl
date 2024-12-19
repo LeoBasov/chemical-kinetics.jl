@@ -52,7 +52,6 @@ end
 
 mutable struct State
     T::Number
-    Tfrac::Number
     nrho::Number
     mole_fractions::Dict{String, Number}
     Tvib::Dict{String, Vector{Number}}
@@ -61,7 +60,7 @@ mutable struct State
     molefrac_offset::Dict{String, Integer}
 
     function State()
-        return new(1.0, 1.0, 1.0, Dict(), Dict(), Dict(), Dict(), Dict())
+        return new(1.0, 1.0, Dict(), Dict(), Dict(), Dict(), Dict())
     end
 end
 

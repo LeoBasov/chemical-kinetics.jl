@@ -6,6 +6,7 @@ using Roots
 function f(u, state, t)
     T = u[1]
     du = zeros(length(u))
+    Tfrac = calc_Tfrac(u, state)
 
     for species in state.species
         mole_fraction = u[1 + state.molefrac_offset[species.first]]
@@ -18,7 +19,7 @@ function f(u, state, t)
             vibmode = species.second.vibmodes[v]
             tau = vibmode.Z / nu
             de = (eeq[v] - u[v + evib_offset]) / tau # + dn_dt : this part has to be modified as I am comparing energies based on old mole fractions with new ones
-            du[1] -= de * _state.Tfrac # TODO: Tfrac con NOT be used like this as it requires constant mole fractions
+            du[1] -= de * Tfrac # TODO: Tfrac con NOT be used like this as it requires constant mole fractions
             du[v + evib_offset] = de
         end
     end
@@ -27,6 +28,27 @@ function f(u, state, t)
     #du[1 + state.molefrac_offset["CO2"]] = -0.1 * u[1 + state.molefrac_offset["CH4"]] * u[1 + state.molefrac_offset["CO2"]]
 
     return du
+end
+
+function calc_Tfrac(state)
+    Tfrac = 1.5
+
+    for species in state.species
+        Tfrac += 0.5 * state.mole_fractions[species.first] * species.second.dof_rot
+    end
+
+    return 1.0 / Tfrac
+end
+
+function calc_Tfrac(u, state)
+    Tfrac = 1.5
+
+    for species in state.species
+        mole_fraction = u[1 + state.molefrac_offset[species.first]]
+        Tfrac += 0.5 * mole_fraction * species.second.dof_rot
+    end
+
+    return 1.0 / Tfrac
 end
 
 function setup_problem!(state, tmax)
@@ -86,7 +108,8 @@ function calc_evib(Tvib, species, mole_fraction)
 end
 
 function calc_etot(state)
-    ekin = state.T / state.Tfrac * kb
+    Tfrac = calc_Tfrac(state)
+    ekin = state.T / Tfrac * kb
     evib = []
 
     for species in state.species
@@ -99,7 +122,8 @@ function calc_etot(state)
 end
 
 function calc_etot(T, state)
-    ekin = T / state.Tfrac * kb
+    Tfrac = calc_Tfrac(state)
+    ekin = T / Tfrac * kb
     evib = []
 
     for species in state.species

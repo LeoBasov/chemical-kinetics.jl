@@ -120,13 +120,6 @@ end
 
 function set_T!(T)
     _state.T = T
-    _state.Tfrac = 1.5
-
-    for species in _state.species
-        _state.Tfrac += 0.5 * _state.mole_fractions[species.first] * species.second.dof_rot
-    end
-
-    _state.Tfrac = 1.0 / _state.Tfrac
 
     if _verbose == true
         println("set T to: " * string(_state.T))
