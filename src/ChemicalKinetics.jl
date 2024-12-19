@@ -7,7 +7,7 @@ export set_molefrac!
 export add_species!
 export print_state
 export initialize!
-export solve!
+export execute!
 export get_energy
 export get_T
 export get_molefrac
@@ -94,7 +94,7 @@ function get_T(N, species_name)
     return t * t_tilde, T
 end
 
-function solve!(tmax)
+function execute!(tmax)
     global _tmax = tmax / t_tilde
     problem = setup_problem!(_state, _tmax)
     global _solution =  solve(problem, alg_hints = [:stiff])
