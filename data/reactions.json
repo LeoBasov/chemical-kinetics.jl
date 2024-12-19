@@ -1,7 +1,7 @@
 {
     "reactions": [
         {
-            "name": "O2 + N --> 2 O + N",
+            "name": "O2 + N --> O + O + N",
             "Arrhenius": {
                 "A": 1.660e-8,
                 "B": -1.5,

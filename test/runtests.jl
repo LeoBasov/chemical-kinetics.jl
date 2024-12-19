@@ -72,4 +72,13 @@ end
     reactions = ChemicalKinetics.read_reactions("../data/reactions.json")
 
     @test 2 == length(reactions)
+
+    @test -1 == reactions[1].stochio_coeff["O2"]
+    @test 0 == reactions[1].stochio_coeff["N"]
+    @test 2 == reactions[1].stochio_coeff["O"]
+
+    @test 1.660e-8 == reactions[1].A
+    @test -1.5 == reactions[1].B
+    @test 8.197e-19 == reactions[1].Ea
+    @test -8.197e-19 == reactions[1].DeltaE
 end

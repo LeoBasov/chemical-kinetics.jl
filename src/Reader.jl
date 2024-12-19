@@ -40,7 +40,38 @@ function read_reactions(file_name)
     
     open(file_name, "r") do file
         json = JSON.parse(file)
-        reaction = Reaction()
+        
+        for r in json["reactions"]
+            reaction = Reaction()
+            str = r["name"]
+            splt = split(replace(str,"+"=>""), " ")
+            pre = true
+
+            for elem in splt
+                if elem == "-->"
+                    pre = false
+                elseif pre ==true && !(elem == "")
+                    if elem in keys(reaction.stochio_coeff)
+                        reaction.stochio_coeff[elem] -= 1
+                    else
+                        reaction.stochio_coeff[elem] = -1
+                    end
+                elseif pre ==false && !(elem == "")
+                    if elem in keys(reaction.stochio_coeff)
+                        reaction.stochio_coeff[elem] += 1
+                    else
+                        reaction.stochio_coeff[elem] = 1
+                    end
+                end
+            end
+
+            reaction.A = r["Arrhenius"]["A"]
+            reaction.B = r["Arrhenius"]["B"]
+            reaction.Ea = r["Arrhenius"]["Ea"]
+            reaction.DeltaE = r["Arrhenius"]["DeltaE"]
+
+            push!(reactions, reaction)
+        end
     end
 
     return reactions

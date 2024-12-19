@@ -1,3 +1,15 @@
+mutable struct Reaction
+    stochio_coeff::Dict{String, Number}
+    A::Number
+    B::Number
+    Ea::Number
+    DeltaE::Number
+
+    function Reaction()
+        new(Dict(), 0.0, 0.0, 0.0, 0.0)
+    end
+end
+
 mutable struct VHS
     dref::Number
     Tref::Number
@@ -37,19 +49,6 @@ mutable struct Species
     end
 end
 
-mutable struct Reaction
-    reactants::Dict{String, Number}
-    products::Dict{String, Number}
-    A::Number
-    B::Number
-    Ea::Number
-    DeltaE::Number
-
-    function Reaction()
-        new(Dict(), Dict(), 0.0, 0.0, 0.0, 0.0)
-    end
-end
-
 mutable struct State
     T::Number
     nrho::Number
@@ -58,9 +57,10 @@ mutable struct State
     species::Dict{String, Species}
     evib_offset::Dict{String, Integer}
     molefrac_offset::Dict{String, Integer}
+    reactions::Vector{Reaction}
 
     function State()
-        return new(1.0, 1.0, Dict(), Dict(), Dict(), Dict(), Dict())
+        return new(1.0, 1.0, Dict(), Dict(), Dict(), Dict(), Dict(), [])
     end
 end
 
