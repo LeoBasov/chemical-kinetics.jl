@@ -1,8 +1,6 @@
 using DifferentialEquations
 using Roots
 
-# TODO: this has to be rewritten useing number densities instead of mole fractions as the total number denisty changes
-
 function f(u, state, t)
     T = u[1]
     du = zeros(length(u))
@@ -18,7 +16,7 @@ function f(u, state, t)
         end
 
         for species_name in keys(reaction.stochio_coeff)
-            du[1 + state.molefrac_offset[species_name]] += reaction.stochio_coeff[species_name] * nu
+            du[1 + state.molefrac_offset[species_name]] += t_tilde * state.nrho * reaction.stochio_coeff[species_name] * nu
         end
     end
 
@@ -32,7 +30,7 @@ function f(u, state, t)
         for v in 1:N_vibmodes
             vibmode = species.second.vibmodes[v]
             tau = vibmode.Z / nu
-            de = (eeq[v] - u[v + evib_offset]) / tau # + dn_dt : this part has to be modified as I am comparing energies based on old mole fractions with new ones
+            de = (eeq[v] - u[v + evib_offset]) / tau
             du[1] -= de * Tfrac
             du[v + evib_offset] = de + du[1 + state.molefrac_offset[species.first]] * u[v + evib_offset] / mole_fraction
         end

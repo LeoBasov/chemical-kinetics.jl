@@ -18,6 +18,16 @@ set_Tvib!("O2", 10000)
 
 read_reaction!("data/exchange.json")
 
-execute!(1e-6)
+execute!(4e-5)
+
+t, T_NO = get_T(300, "NO")
+
+p = plot(t, T_NO)
+
+display(p)
+
+t, X = get_molefrac(300)
+
+display(plot(t, X))
 
 println("done")
