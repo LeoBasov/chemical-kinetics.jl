@@ -45,11 +45,6 @@ set_Tvib!("O2", 10000)
 
 read_reaction!("data/exchange.json")
 
-e0 = ChemicalKinetics.calc_etot(ChemicalKinetics._state)
-f(T, p=ChemicalKinetics._state) = ChemicalKinetics.calc_etot(T, p) / e0 - 1.0
-
-Teq = find_zero(f, 5000)
-
 execute!(4e-5)
 
 t, T_NO = get_T(300, "NO")
@@ -60,20 +55,16 @@ p = plot(t, T_NO)
 p = plot!(t, T_N2)
 p = plot!(t, T_O2)
 
-Teq = ones(length(t)) * Teq
-
-#p = plot!(t, Teq)
-
 t_fp = fp_data[1] * 1e-8
 T_fp = fp_data[2]
 Tv_NO = fp_data[3]
 Tv_N2 = fp_data[4]
 Tv_O2 = fp_data[5]
 
-p = plot!(t_fp, T_fp)
-#p = plot!(t, Tv_NO)
-#p = plot!(t, Tv_N2)
-#p = plot!(t, Tv_O2)
+p = plot!(t_fp, T_fp, line = (3, :dashdot))
+p = plot!(t_fp, Tv_NO, line = (3, :dashdot))
+p = plot!(t_fp, Tv_N2, line = (3, :dashdot))
+p = plot!(t_fp, Tv_O2, line = (3, :dashdot))
 
 display(p)
 

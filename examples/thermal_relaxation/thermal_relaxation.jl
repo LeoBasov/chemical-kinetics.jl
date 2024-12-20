@@ -48,7 +48,7 @@ f(T, p=ChemicalKinetics._state) = ChemicalKinetics.calc_etot(T, p) / e0 - 1.0
 
 Teq = find_zero(f, 5000)
 
-execute!(3e-3)
+execute!(1e-3)
 
 t, T_NO = get_T(300, "NO")
 t, T_N2 = get_T(300, "N2")
@@ -74,21 +74,5 @@ p = plot!(t_fp, Tv_N2, line = (3, :dashdot))
 p = plot!(t_fp, Tv_O2, line = (3, :dashdot))
 
 display(p)
-
-t, X = get_molefrac(300)
-
-nrho_NO = fp_data[6]
-nrho_N2 = fp_data[7]
-nrho_N = fp_data[8]
-nrho_O2 = fp_data[9]
-nrho_O = fp_data[10]
-
-plot(t_fp, nrho_NO / 1e23, line = (3, :dashdot))
-plot!(t_fp, nrho_N2 / 1e23, line = (3, :dashdot))
-plot!(t_fp, nrho_N / 1e23, line = (3, :dashdot))
-plot!(t_fp, nrho_O2 / 1e23, line = (3, :dashdot))
-plot!(t_fp, nrho_O / 1e23, line = (3, :dashdot))
-
-display(plot!(t, X))
 
 println("done")
