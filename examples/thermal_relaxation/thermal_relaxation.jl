@@ -48,7 +48,7 @@ f(T, p=ChemicalKinetics._state) = ChemicalKinetics.calc_etot(T, p) / e0 - 1.0
 
 Teq = find_zero(f, 5000)
 
-execute!(1e-3)
+DrunkKirexecute!(1e-3)
 
 t, T_NO = get_T(300, "NO")
 t, T_N2 = get_T(300, "N2")
