@@ -17,7 +17,7 @@ f(T, p=ChemicalKinetics._state) = ChemicalKinetics.calc_etot(T, p) / e0 - 1.0
 
 Teq = find_zero(f, 5000)
 
-ChemicalKinetics.solve!(3e-5)
+execute!(3e-5)
 
 t, T1 = get_T(300, "CO2")
 t, T2 = get_T(300, "CH4")
@@ -28,9 +28,5 @@ plot(t, T1)
 plot!(t, T2)
 
 display(plot!(t, Teq, line = (3, :dashdot)))
-
-t, X = get_molefrac(300)
-
-display(plot(t, X))
 
 println("done")
