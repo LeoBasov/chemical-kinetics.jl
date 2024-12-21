@@ -12,6 +12,7 @@ export get_energy
 export get_T
 export get_Tvib
 export get_molefrac
+export get_nrho
 export read_reaction!
 
 include("Gas.jl")
@@ -28,6 +29,30 @@ function read_reaction!(file_name)
     global _state.reactions = read_reactions(file_name)
 
     println(string(length(_state.reactions)) * " reactions added")
+end
+
+function get_nrho(N)
+    t = []
+    X = []
+
+    for i in 1:length(_state.species)
+        push!(X, [])
+    end
+
+    for tt in range(0, _tmax, N)
+        push!(t, tt * t_tilde)
+        i = 1
+
+        for species in _state.species
+            molde_fraction = _solution(tt)[1 + _state.molefrac_offset[species.first]]
+            push!(X[i], molde_fraction)
+            i += 1
+        end
+    end
+
+    X *= _state.nrho
+
+    return t, X
 end
 
 function get_molefrac(N)
