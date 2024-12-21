@@ -10,6 +10,7 @@ export initialize!
 export execute!
 export get_energy
 export get_T
+export get_Tvib
 export get_molefrac
 export read_reaction!
 
@@ -73,18 +74,29 @@ function get_energy(N)
     return t, e
 end
 
-function get_T(N, species_name)
+function get_T(N)
+    t = []
+    T = []
+
+    for tt in range(0, _tmax, N)
+        push!(t, tt)
+        push!(T, _solution(tt)[1])
+    end
+
+    return t * t_tilde, T
+end
+
+function get_Tvib(N, species_name)
     Nvibmode = length(_state.species[species_name].vibmodes)
     t = []
     T = []
 
-    for i in 1:(Nvibmode + 1)
+    for i in 1:(Nvibmode)
         push!(T, [])
     end
 
     for tt in range(0, _tmax, N)
         push!(t, tt)
-        push!(T[1], _solution(tt)[1])
 
         for i in 1:Nvibmode
             mole_fraciont = _solution(tt)[1 + _state.molefrac_offset[species_name]]
@@ -94,7 +106,7 @@ function get_T(N, species_name)
             Z = ZeroProblem(f, 1000)
             Tvib = solve(Z, Order1(), p=(theta, degen))
 
-            push!(T[i + 1], Tvib)
+            push!(T[i], Tvib)
         end
     end
 
