@@ -15,7 +15,7 @@ function f(u, state, t)
             nu *= mole_fraction
         end
 
-        du[1] = t_tilde * state.nrho * nu * Tfrac * reaction.DeltaE / kb
+        du[1] += t_tilde * state.nrho * nu * Tfrac * reaction.DeltaE / kb
 
         for species_name in keys(reaction.stochio_coeff)
             du[1 + state.molefrac_offset[species_name]] += t_tilde * state.nrho * reaction.stochio_coeff[species_name] * nu
