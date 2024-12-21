@@ -95,6 +95,11 @@ execute!(4e-5)
 
 
 ## Internals
+
+### Assumptions
+The simulaiton works with mixtures but it is asumed that $T_{rot} = T$ and $T_s = T$ for all species $s$.
+
+### Used Values
 The simulation internaly works with scaled values
 $$
 \tilde{e} = \frac{e}{k_B}
