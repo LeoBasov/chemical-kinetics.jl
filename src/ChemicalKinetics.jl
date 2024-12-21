@@ -153,6 +153,10 @@ function set_T!(T)
     if _verbose == true
         println("set T to: " * string(_state.T))
     end
+
+    for species in _state.species
+        set_Tvib!(species.first, T)
+    end
 end
 
 function set_Tvib!(species_name, Tvib)
