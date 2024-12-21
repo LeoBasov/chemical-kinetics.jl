@@ -1,6 +1,7 @@
 using ChemicalKinetics
 using Plots
 using Roots
+using LaTeXStrings
 
 function read_log(file_name)
     data = [[], [], [], [], [], [], [], [], [], []]
@@ -26,8 +27,7 @@ function read_log(file_name)
     return data
 end
 
-fp_data = read_log("examples/chemistry_exchange/chemistry_exchange.sparta")
-
+# simulation setup and execution
 initialize!()
 
 add_species!("data/NO.json", mole_frac = 0.2)
@@ -43,13 +43,18 @@ read_reaction!("data/exchange.json")
 
 execute!(4e-5)
 
-t, T_NO = get_T(300, "NO")
-t, T_N2 = get_T(300, "N2")
-t, T_O2 = get_T(300, "O2")
+# plotting
+fp_data = read_log("examples/chemistry_exchange/chemistry_exchange.sparta")
 
-p = plot(t, T_NO)
-p = plot!(t, T_N2)
-p = plot!(t, T_O2)
+t, T = get_T(300)
+t, T_NO = get_Tvib(300, "NO")
+t, T_N2 = get_Tvib(300, "N2")
+t, T_O2 = get_Tvib(300, "O2")
+
+p = plot(t, T, label="conit")
+#plot!(t, T_NO)
+#plot!(t, T_N2)
+#plot!(t, T_O2)
 
 t_fp = fp_data[1] * 1e-8
 T_fp = fp_data[2]
@@ -57,14 +62,17 @@ Tv_NO = fp_data[3]
 Tv_N2 = fp_data[4]
 Tv_O2 = fp_data[5]
 
-p = plot!(t_fp, T_fp, line = (3, :dashdot))
-p = plot!(t_fp, Tv_NO, line = (3, :dashdot))
-p = plot!(t_fp, Tv_N2, line = (3, :dashdot))
-p = plot!(t_fp, Tv_O2, line = (3, :dashdot))
+plot!(t_fp, T_fp, line = (3, :dashdot), label="FP")
+#plot!(t_fp, Tv_NO, line = (3, :dashdot))
+#plot!(t_fp, Tv_N2, line = (3, :dashdot))
+#plot!(t_fp, Tv_O2, line = (3, :dashdot))
+
+xlabel!(L"t / s")
+ylabel!(L"T / K")
 
 display(p)
 
-t, X = get_molefrac(300)
+t, nrho = get_nrho(300)
 
 nrho_NO = fp_data[6]
 nrho_N2 = fp_data[7]
@@ -72,12 +80,21 @@ nrho_N = fp_data[8]
 nrho_O2 = fp_data[9]
 nrho_O = fp_data[10]
 
-plot(t_fp, nrho_NO / 1e23, line = (3, :dashdot))
-plot!(t_fp, nrho_N2 / 1e23, line = (3, :dashdot))
-plot!(t_fp, nrho_N / 1e23, line = (3, :dashdot))
-plot!(t_fp, nrho_O2 / 1e23, line = (3, :dashdot))
-plot!(t_fp, nrho_O / 1e23, line = (3, :dashdot))
+p = plot(t_fp, nrho_NO, line = (3, :dashdot), label="N2")
+plot!(t_fp, nrho_N2, line = (3, :dashdot), label="O2")
+plot!(t_fp, nrho_N, line = (3, :dashdot), label="O")
+plot!(t_fp, nrho_O2, line = (3, :dashdot), label="NO")
+plot!(t_fp, nrho_O, line = (3, :dashdot), label="N")
 
-display(plot!(t, X))
+plot!(t, nrho[1], label="NO")
+plot!(t, nrho[2], label="N2")
+plot!(t, nrho[3], label="N")
+plot!(t, nrho[4], label="O2")
+plot!(t, nrho[5], label="O")
+
+xlabel!(L"t / s")
+ylabel!(L"n_{\rho} / m^{-3}")
+
+display(p)
 
 println("done")
