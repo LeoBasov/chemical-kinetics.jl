@@ -36,7 +36,7 @@ add_species!("data/N.json", mole_frac = 0.2)
 add_species!("data/O2.json", mole_frac = 0.2)
 add_species!("data/O.json", mole_frac = 0.2)
 
-read_reaction!("data/exchange.json")
+add_reactions!("data/exchange.json")
 
 set_T!(10000)
 set_nrho!(1e23)

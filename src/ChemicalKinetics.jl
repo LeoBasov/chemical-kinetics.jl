@@ -13,7 +13,7 @@ export get_T
 export get_Tvib
 export get_molefrac
 export get_nrho
-export read_reaction!
+export add_reactions!
 
 include("Gas.jl")
 include("Reader.jl")
@@ -25,10 +25,14 @@ _verbose::Bool = true
 _solution = nothing
 _tmax::Number = 0.0
 
-function read_reaction!(file_name)
-    global _state.reactions = read_reactions(file_name)
+function add_reactions!(file_name)
+    reactions = read_reactions(file_name)
 
-    println(string(length(_state.reactions)) * " reactions added")
+    for reaction in reactions
+        push!(_state.reactions, reaction)
+    end
+
+    println(string(length(reactions)) * " reactions added")
 end
 
 function get_nrho(N)
