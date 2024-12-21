@@ -36,7 +36,7 @@ add_species!("data/N.json", mole_frac = 0.2)
 add_species!("data/O2.json", mole_frac = 0.2)
 add_species!("data/O.json", mole_frac = 0.2)
 
-add_reactions!("data/exchange.json")
+add_reactions!("data/dissociation.json")
 
 set_T!(10000)
 set_nrho!(1e23)
@@ -44,7 +44,7 @@ set_nrho!(1e23)
 execute!(4e-5)
 
 # plotting
-fp_data = read_log("examples/chemistry_exchange/chemistry_exchange.sparta")
+fp_data = read_log("examples/chemistry_dissociation/log.sparta")
 
 t, T = get_T(300)
 t, T_NO = get_Tvib(300, "NO")
