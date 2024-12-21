@@ -51,7 +51,7 @@ t, T_NO = get_Tvib(300, "NO")
 t, T_N2 = get_Tvib(300, "N2")
 t, T_O2 = get_Tvib(300, "O2")
 
-p = plot(t, T, label="conit")
+p = plot(t, T, line = 2, label="conit")
 #plot!(t, T_NO)
 #plot!(t, T_N2)
 #plot!(t, T_O2)
@@ -62,7 +62,7 @@ Tv_NO = fp_data[3]
 Tv_N2 = fp_data[4]
 Tv_O2 = fp_data[5]
 
-plot!(t_fp, T_fp, line = (3, :dashdot), label="FP")
+plot!(t_fp, T_fp, line = (2, :dashdot), label="FP")
 #plot!(t_fp, Tv_NO, line = (3, :dashdot))
 #plot!(t_fp, Tv_N2, line = (3, :dashdot))
 #plot!(t_fp, Tv_O2, line = (3, :dashdot))
@@ -80,17 +80,17 @@ nrho_N = fp_data[8]
 nrho_O2 = fp_data[9]
 nrho_O = fp_data[10]
 
-p = plot(t_fp, nrho_NO, line = (3, :dashdot), label="N2")
-plot!(t_fp, nrho_N2, line = (3, :dashdot), label="O2")
-plot!(t_fp, nrho_N, line = (3, :dashdot), label="O")
-plot!(t_fp, nrho_O2, line = (3, :dashdot), label="NO")
-plot!(t_fp, nrho_O, line = (3, :dashdot), label="N")
+p = plot(t_fp, nrho_NO, line = (2, :dashdot), label="N2")
+plot!(t_fp, nrho_N2, line = (2, :dashdot), label="O2")
+plot!(t_fp, nrho_N, line = (2, :dashdot), label="O")
+plot!(t_fp, nrho_O2, line = (2, :dashdot), label="NO")
+plot!(t_fp, nrho_O, line = (2, :dashdot), label="N")
 
-plot!(t, nrho[1], label="NO")
-plot!(t, nrho[2], label="N2")
-plot!(t, nrho[3], label="N")
-plot!(t, nrho[4], label="O2")
-plot!(t, nrho[5], label="O")
+plot!(t, nrho[1], line = 2, label="NO")
+plot!(t, nrho[2], line = 2, label="N2")
+plot!(t, nrho[3], line = 2, label="N")
+plot!(t, nrho[4], line = 2, label="O2")
+plot!(t, nrho[5], line = 2, label="O")
 
 xlabel!(L"t / s")
 ylabel!(L"n_{\rho} / m^{-3}")
