@@ -8,7 +8,7 @@ export add_species!
 export print_state
 export initialize!
 export execute!
-export get_energy
+export get_energies
 export get_T
 export get_Tvib
 export get_molefrac
@@ -77,7 +77,7 @@ function get_molefrac(N)
     return t, X
 end
 
-function get_energy(N)
+function get_energies(N)
     R = size(_solution)[1]
     t = []
     e = []
