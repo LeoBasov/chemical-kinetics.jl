@@ -7,9 +7,13 @@ export set_molefrac!
 export add_species!
 export print_state
 export initialize!
-export solve!
-export get_energy
+export execute!
+export get_energies
 export get_T
+export get_Tvib
+export get_molefrac
+export get_nrho
+export read_reaction!
 
 include("Gas.jl")
 include("Reader.jl")
@@ -21,7 +25,59 @@ _verbose::Bool = true
 _solution = nothing
 _tmax::Number = 0.0
 
-function get_energy(N)
+function read_reaction!(file_name)
+    global _state.reactions = read_reactions(file_name)
+
+    println(string(length(_state.reactions)) * " reactions added")
+end
+
+function get_nrho(N)
+    t = []
+    X = []
+
+    for i in 1:length(_state.species)
+        push!(X, [])
+    end
+
+    for tt in range(0, _tmax, N)
+        push!(t, tt * t_tilde)
+        i = 1
+
+        for species in _state.species
+            molde_fraction = _solution(tt)[1 + _state.molefrac_offset[species.first]]
+            push!(X[i], molde_fraction)
+            i += 1
+        end
+    end
+
+    X *= _state.nrho
+
+    return t, X
+end
+
+function get_molefrac(N)
+    t = []
+    X = []
+
+    for i in 1:length(_state.species)
+        push!(X, [])
+    end
+
+    for tt in range(0, _tmax, N)
+        push!(t, tt * t_tilde)
+        i = 1
+
+        for species in _state.species
+            molde_fraction = _solution(tt)[1 + _state.molefrac_offset[species.first]]
+            push!(X[i], molde_fraction)
+            i += 1
+        end
+    end
+
+    return t, X
+end
+
+function get_energies(N)
     R = size(_solution)[1]
     t = []
     e = []
@@ -43,35 +99,68 @@ function get_energy(N)
     return t, e
 end
 
-function get_T(N, species_name)
+function get_T(N)
+    t = []
+    T = []
+
+    for tt in range(0, _tmax, N)
+        push!(t, tt)
+        push!(T, _solution(tt)[1])
+    end
+
+    return t * t_tilde, T
+end
+
+function get_Tvib(N, species_name)
     Nvibmode = length(_state.species[species_name].vibmodes)
     t = []
     T = []
 
-    for i in 1:(Nvibmode + 1)
+    for i in 1:(Nvibmode)
         push!(T, [])
     end
 
     for tt in range(0, _tmax, N)
         push!(t, tt)
-        push!(T[1], _solution(tt)[1])
 
         for i in 1:Nvibmode
-            mole_fraciont = _state.mole_fractions[species_name]
+            mole_fraciont = _solution(tt)[1 + _state.molefrac_offset[species_name]]
             theta = _state.species[species_name].vibmodes[i].theta
             degen = _state.species[species_name].vibmodes[i].degen
-            f(x, p = (1, 1)) = mole_fraciont * calc_evib_kb(x, p) - _solution(tt)[i + _state.offset[species_name]]
+            f(x, p = (1, 1)) = mole_fraciont * calc_evib_kb(x, p) - _solution(tt)[i + _state.evib_offset[species_name]]
             Z = ZeroProblem(f, 1000)
             Tvib = solve(Z, Order1(), p=(theta, degen))
 
-            push!(T[i + 1], Tvib)
+            push!(T[i], Tvib)
         end
     end
 
     return t * t_tilde, T
 end
 
-function solve!(tmax)
+function execute!(tmax)
+    reactions = []
+    N_pre = length(_state.reactions)
+
+    for reaction in _state.reactions
+        good = true
+
+        for species_name in keys(reaction.stochio_coeff)
+            if !(species_name in keys(_state.species))
+                good = false
+                break
+            end
+        end
+
+        if good == true
+            push!(reactions, reaction)
+        end
+    end
+
+    _state.reactions = reactions
+
+    println(string(N_pre - length(_state.reactions)) * " reactions removed due to missing species")
+
     global _tmax = tmax / t_tilde
     problem = setup_problem!(_state, _tmax)
     global _solution =  solve(problem, alg_hints = [:stiff])
@@ -97,16 +186,13 @@ end
 
 function set_T!(T)
     _state.T = T
-    _state.Tfrac = 1.5
-
-    for species in _state.species
-        _state.Tfrac += 0.5 * _state.mole_fractions[species.first] * species.second.dof_rot
-    end
-
-    _state.Tfrac = 1.0 / _state.Tfrac
 
     if _verbose == true
         println("set T to: " * string(_state.T))
+    end
+
+    for species in _state.species
+        set_Tvib!(species.first, T)
     end
 end
 

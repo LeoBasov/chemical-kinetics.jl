@@ -12,16 +12,17 @@ set_nrho!(1e22)
 set_Tvib!("CH4", [5000, 6000, 7000, 8000])
 set_Tvib!("CO2", [2000, 3000, 4000])
 
+execute!(3e-5)
+
 e0 = ChemicalKinetics.calc_etot(ChemicalKinetics._state)
 f(T, p=ChemicalKinetics._state) = ChemicalKinetics.calc_etot(T, p) / e0 - 1.0
 
 Teq = find_zero(f, 5000)
-Teq = ones(length(t)) * Teq
-
-ChemicalKinetics.solve!(3e-5)
 
 t, T1 = get_T(300, "CO2")
 t, T2 = get_T(300, "CH4")
+
+Teq = ones(length(t)) * Teq
 
 plot(t, T1)
 plot!(t, T2)

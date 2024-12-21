@@ -68,4 +68,20 @@ end
     @test 1 == species.vibmodes[1].degen
     @test 1 == species.vibmodes[2].degen
     @test 2 == species.vibmodes[3].degen
+
+    reactions = ChemicalKinetics.read_reactions("../data/reactions.json")
+
+    @test 3 == length(reactions)
+
+    @test -1 == reactions[1].stochio_coeff["O2"]
+    @test 0 == reactions[1].stochio_coeff["N"]
+    @test 2 == reactions[1].stochio_coeff["O"]
+
+    @test 1.660e-8 == reactions[1].A
+    @test -1.5 == reactions[1].B
+    @test 8.197e-19 == reactions[1].Ea
+    @test -8.197e-19 == reactions[1].DeltaE
+
+    @test "O2" == reactions[1].reactants[1]
+    @test "N" == reactions[1].reactants[2]
 end

@@ -25,3 +25,10 @@ Manifest.toml
 
 # Files used for vscode
 .vscode
+
+# Latex files
+*.aux
+*.bbl
+*.blg
+*.log
+*.synctex.gz
