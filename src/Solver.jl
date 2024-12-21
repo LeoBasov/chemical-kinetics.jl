@@ -5,6 +5,12 @@ function f(u, state, t)
     T = u[1]
     du = zeros(length(u))
     Tfrac = calc_Tfrac(u, state)
+    nrho = 0.0
+
+    for species in state.species
+        mole_fraction = u[1 + state.molefrac_offset[species.first]]
+        nrho += mole_fraction * state.nrho
+    end
     
     for reaction in state.reactions
         k = reaction.A * T^reaction.B * exp(-reaction.Ea/(kb*T))
@@ -15,16 +21,17 @@ function f(u, state, t)
             nu *= mole_fraction
         end
 
-        du[1] += t_tilde * state.nrho * nu * Tfrac * reaction.DeltaE / kb
+        nu *= t_tilde * nrho * nrho / state.nrho
+        du[1] += nu * Tfrac * reaction.DeltaE / kb 
 
         for species_name in keys(reaction.stochio_coeff)
-            du[1 + state.molefrac_offset[species_name]] += t_tilde * state.nrho * reaction.stochio_coeff[species_name] * nu
+            du[1 + state.molefrac_offset[species_name]] += reaction.stochio_coeff[species_name] * nu
         end
     end
 
     for species in state.species
         mole_fraction = u[1 + state.molefrac_offset[species.first]]
-        nu = calc_coll_freq(species.second, state.nrho, T) * t_tilde
+        nu = calc_coll_freq(species.second, nrho, T) * t_tilde
         eeq = calc_evib(T, species.second, mole_fraction) / kb
         N_vibmodes = length(species.second.vibmodes)
         evib_offset = state.evib_offset[species.first]
