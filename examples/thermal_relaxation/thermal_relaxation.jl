@@ -26,8 +26,6 @@ function read_log(file_name)
     return data
 end
 
-fp_data = read_log("examples/thermal_relaxation/therm_relax_log.sparta")
-
 initialize!()
 
 add_species!("data/NO.json", mole_frac = 0.2)
@@ -43,24 +41,28 @@ set_Tvib!("NO", 5000)
 set_Tvib!("N2", 5000)
 set_Tvib!("O2", 5000)
 
+execute!(1e-3)
+
 e0 = ChemicalKinetics.calc_etot(ChemicalKinetics._state)
 f(T, p=ChemicalKinetics._state) = ChemicalKinetics.calc_etot(T, p) / e0 - 1.0
 
 Teq = find_zero(f, 5000)
 
-execute!(1e-3)
+fp_data = read_log("examples/thermal_relaxation/therm_relax_log.sparta")
 
-t, T_NO = get_T(300, "NO")
-t, T_N2 = get_T(300, "N2")
-t, T_O2 = get_T(300, "O2")
+t, T = get_T(300)
+t, T_NO = get_Tvib(300, "NO")
+t, T_N2 = get_Tvib(300, "N2")
+t, T_O2 = get_Tvib(300, "O2")
 
-p = plot(t, T_NO)
-p = plot!(t, T_N2)
-p = plot!(t, T_O2)
+p = plot(t, T, line = 2, label="T - conti")
+plot!(t, T_NO, line = 2, label="Tvib NO - conti")
+plot!(t, T_N2, line = 2, label="Tvib N2 - conti")
+plot!(t, T_O2, line = 2, label="Tvib O2 - conti")
 
 Teq = ones(length(t)) * Teq
 
-p = plot!(t, Teq, line = (3, :dashdot))
+plot!(t, Teq, line = (2, :dash), label="Teq")
 
 t_fp = fp_data[1] * 1e-7
 T_fp = fp_data[2]
@@ -68,10 +70,13 @@ Tv_NO = fp_data[3]
 Tv_N2 = fp_data[4]
 Tv_O2 = fp_data[5]
 
-p = plot!(t_fp, T_fp, line = (3, :dashdot))
-p = plot!(t_fp, Tv_NO, line = (3, :dashdot))
-p = plot!(t_fp, Tv_N2, line = (3, :dashdot))
-p = plot!(t_fp, Tv_O2, line = (3, :dashdot))
+plot!(t_fp, T_fp, line = (2, :dashdot), label="T - FP")
+plot!(t_fp, Tv_NO, line = (2, :dashdot), label="Tvib NO - FP")
+plot!(t_fp, Tv_N2, line = (2, :dashdot), label="Tvib N2 - FP")
+plot!(t_fp, Tv_O2, line = (2, :dashdot), label="Tvib O2 - FP")
+
+xlabel!(L"t / s")
+ylabel!(L"T / K")
 
 display(p)
 
