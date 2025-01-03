@@ -14,6 +14,7 @@ export get_Tvib
 export get_molefrac
 export get_nrho
 export add_reactions!
+export write2csv
 
 include("Gas.jl")
 include("Reader.jl")
