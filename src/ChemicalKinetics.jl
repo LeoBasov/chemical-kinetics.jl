@@ -20,6 +20,7 @@ include("Gas.jl")
 include("Reader.jl")
 include("Solver.jl")
 include("Constants.jl")
+include("Writer.jl")
 
 _state::State = State()
 _verbose::Bool = true
