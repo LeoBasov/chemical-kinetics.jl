@@ -19,12 +19,14 @@ f(T, p=ChemicalKinetics._state) = ChemicalKinetics.calc_etot(T, p) / e0 - 1.0
 
 Teq = find_zero(f, 5000)
 
-t, T1 = get_T(300, "CO2")
-t, T2 = get_T(300, "CH4")
+t, T = get_T(300)
+t, T1 = get_Tvib(300, "CO2")
+t, T2 = get_Tvib(300, "CH4")
 
 Teq = ones(length(t)) * Teq
 
-plot(t, T1)
+plot(t, T)
+plot!(t, T1)
 plot!(t, T2)
 
 display(plot!(t, Teq, line = (3, :dashdot)))
