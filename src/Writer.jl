@@ -10,9 +10,13 @@ function write2csv(file_prefix, N = 1000)
         Tvib = Dict()
 
         for species in _state.species
-            str_Tvib *= ",Tvib_" * species.first
+            str_nrho *= ",nrho_" * species.first
             t, Tvib_s = get_Tvib(N, species.first)
             Tvib[species.first] = Tvib_s
+
+            for v in 1:length(species.second.vibmodes)
+                str_Tvib *= ",Tvib_" * species.first * "_" * string(v)
+            end
         end
 
         write(file, str * str_Tvib * str_nrho * "\n")
