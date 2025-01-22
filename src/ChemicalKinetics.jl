@@ -16,6 +16,7 @@ export get_molefrac
 export get_nrho
 export add_reactions!
 export write2csv
+export write2netCDF
 
 include("Gas.jl")
 include("Reader.jl")
