@@ -3,6 +3,7 @@ module ChemicalKinetics
 export set_nrho!
 export set_T!
 export set_Tvib!
+export set_Zvib!
 export set_molefrac!
 export add_species!
 export print_state
@@ -14,11 +15,14 @@ export get_Tvib
 export get_molefrac
 export get_nrho
 export add_reactions!
+export write2csv
+export write2netCDF
 
 include("Gas.jl")
 include("Reader.jl")
 include("Solver.jl")
 include("Constants.jl")
+include("Writer.jl")
 
 _state::State = State()
 _verbose::Bool = true
@@ -215,6 +219,26 @@ function set_Tvib!(species_name, Tvib)
 
     if _verbose == true
         println("set Tvib of[" * species_name * "] to: " * string(_state.Tvib[species_name]))
+    end 
+end
+
+function set_Zvib!(species_name, Zvib)
+    species = _state.species[species_name]
+
+    if typeof(Zvib) <: Number
+        for mode in species.vibmodes
+            mode.Z = Zvib
+        end
+    elseif typeof(Zvib) <: Array && size(Zvib) == size(species.vibmodes)
+        for i in eachindex(species.vibmodes)
+            species.vibmodes[i].Z = Zvib[i]
+        end
+    else
+        error("wrong Zvib format")
+    end
+
+    if _verbose == true
+        println("set Zvib of[" * species_name * "] to: " * string(Zvib))
     end 
 end
 
