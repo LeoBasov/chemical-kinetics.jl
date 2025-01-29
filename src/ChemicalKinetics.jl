@@ -148,6 +148,7 @@ function get_Tvib(N, species_name)
 end
 
 function execute!(tmax)
+    # check reations
     reactions = []
     N_pre = length(_state.reactions)
 
@@ -169,6 +170,15 @@ function execute!(tmax)
     _state.reactions = reactions
 
     println(string(N_pre - length(_state.reactions)) * " reactions removed due to missing species")
+
+    # check species for polyatomic speices in combnation with relax mode
+    for species in _state.species
+        if length(species.second.vibmodes) > 1
+            println("WARNING: variable collision numbers are not implemented for polyatomic species")
+            set_relax_mode!("constant")
+            break
+        end
+    end
 
     global _tmax = tmax / t_tilde
     problem = setup_problem!(_state, _tmax)
@@ -258,6 +268,8 @@ function set_relax_mode!(mode::String)
     else
         error("undefined relax mode: [" * mode * "]")
     end
+
+    println("set relax mode to: [" * mode * "]")
 end
 
 function add_species!(file_name; mole_frac = 0.0)
