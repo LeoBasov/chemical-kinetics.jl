@@ -97,4 +97,8 @@ end
 
     @test "O2" == reactions[1].reactants[1]
     @test "N" == reactions[1].reactants[2]
+
+    log = ChemicalKinetics.read_SPARTA_log("test_data/log.sparta")
+
+    @test 1e-8 == log.dt
 end
