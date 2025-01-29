@@ -59,9 +59,10 @@ mutable struct State
     evib_offset::Dict{String, Integer}
     molefrac_offset::Dict{String, Integer}
     reactions::Vector{Reaction}
+    constant_relax_mode::Bool 
 
     function State()
-        return new(1.0, 1.0, Dict(), Dict(), Dict(), Dict(), Dict(), [])
+        return new(1.0, 1.0, Dict(), Dict(), Dict(), Dict(), Dict(), [], true)
     end
 end
 
