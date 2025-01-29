@@ -101,4 +101,7 @@ end
     log = ChemicalKinetics.read_SPARTA_log("test_data/log.sparta")
 
     @test 1e-8 == log.dt
+    @test 1 == length(log.data)
+    @test 32 == length(log.data[1])
+    @test 4001 == length(log.data[1]["Step"])
 end
