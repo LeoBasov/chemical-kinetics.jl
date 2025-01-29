@@ -6,6 +6,7 @@ export set_Tvib!
 export set_Zvib!
 export set_molefrac!
 export add_species!
+export set_relax_mode!
 export print_state
 export initialize!
 export execute!
@@ -246,6 +247,16 @@ function set_molefrac!(species_name, mole_frac)
     _state.mole_fractions[species_name] = mole_frac
     if _verbose == true
         println("set mole fraction of [" * species_name * "] to: " * string(mole_frac))
+    end
+end
+
+function set_relax_mode!(mode::String)
+    if mode == "constant"
+        _state.constant_relax_mode = true
+    elseif mode == "variable"
+        _state.constant_relax_mode = false
+    else
+        error("undefined relax mode: [" * mode * "]")
     end
 end
 
