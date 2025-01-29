@@ -1,5 +1,14 @@
 using JSON
 
+mutable struct SPARTAlog
+    dt::Float64
+    data::Array
+
+    function SPARTAlog()
+        new(0.0, [])
+    end
+end
+
 function read_species(file_name)
     species = Species()
     
@@ -76,4 +85,84 @@ function read_reactions(file_name)
     end
 
     return reactions
+end
+
+function _setup_data(splt)
+    data = Dict()
+    names = []
+    
+    for elem in splt
+        push!(names, elem)
+        data[elem] = []
+    end
+    
+    return names, data
+end
+
+function _read_data(file_name)
+    found = false
+    read = false
+    data_loc = Dict()
+    data = []
+    names = []
+
+    open(file_name, "r") do file
+        for line in readlines(file)
+            splt = split(line, " ")
+            len = length(splt)
+
+            if len > 1 && splt[1] == "Step"
+                found = true
+                data_loc = Dict()
+            end
+
+            if found == true && read == false
+                names, data_loc = _setup_data(splt)
+                read = true
+                continue
+            end
+
+            if found && read && length(splt) != length(names)
+                found = false
+                read = false
+                push!(data, data_loc)
+            end
+
+            if found == true && read == true
+                try
+                    for i in 1:length(names)
+                        data_loc[names[i]].append(float(splt[i]))
+                    end
+                catch err
+                    break
+                end
+            end
+        end
+    end
+
+    return data
+end
+
+function _read_timestep(file_path)
+    open(file_path, "r") do file
+        for line in readlines(file)
+            splt = split(line, " ")
+            len = length(splt)
+    
+            if len == 2 && splt[1] == "timestep"
+                return float(splt[2])
+            end
+        end
+    end
+
+    error("timestep not found")
+end
+
+function read_SPARTA_log(file_path)
+    log = SPARTAlog()
+
+    log.dt = _read_timestep(file_path)
+    log.data = _read_data(file_path)
+
+    return log
 end
