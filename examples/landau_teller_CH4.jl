@@ -21,7 +21,8 @@ plot!(t, Tvib)
 
 display(p)
 
-#write2netCDF("CH4")
+#=
+write2netCDF("CH4")
 
 ds = NCDataset("CH4.nc")
 
@@ -41,3 +42,4 @@ p = plot!(t, Tvib_CH4_4)
 display(p)
 
 println("done")
+=#
