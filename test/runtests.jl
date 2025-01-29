@@ -14,6 +14,19 @@ using Test
     nu = ChemicalKinetics.calc_coll_freq(state.species["CH4"], state.nrho, state.T)
 
     @test 3.6990640842564846e6 == nu
+
+    # test calculation of variable collision numbers
+    initialize!(verbose = false)
+
+    add_species!("../data/N2.json", mole_frac = 1.0)
+
+    set_nrho!(1e22)
+    set_T!(10000)
+
+    state = ChemicalKinetics._state
+    Z = ChemicalKinetics.calc_coll_number(state.T, state.species["N2"].vhs)
+
+    @test 271.5423119112881 == Z
 end
 
 @testset "ChemicalKinetics.jl" begin

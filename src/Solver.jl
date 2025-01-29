@@ -1,6 +1,10 @@
 using DifferentialEquations
 using Roots
 
+function calc_coll_number(T::Float64, spec_data::VHS)
+    spec_data.C1 * exp(spec_data.C2 * T^(-1.0/3.0)) * T^(-spec_data.omega)
+end
+
 function f(u, state, t)
     T = u[1]
     du = zeros(length(u))
@@ -38,7 +42,8 @@ function f(u, state, t)
 
         for v in 1:N_vibmodes
             vibmode = species.second.vibmodes[v]
-            tau = vibmode.Z / nu
+            Z = state.constant_relax_mode == true ? vibmode.Z : calc_coll_number(u[1], species.second.vhs)
+            tau = Z / nu
             de = (eeq[v] - u[v + evib_offset]) / tau
             du[1] -= de * Tfrac
             du[v + evib_offset] = de + du[1 + state.molefrac_offset[species.first]] * u[v + evib_offset] / mole_fraction
