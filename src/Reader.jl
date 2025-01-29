@@ -92,8 +92,10 @@ function _setup_data(splt)
     names = []
     
     for elem in splt
-        push!(names, elem)
-        data[elem] = []
+        if elem != ""
+            push!(names, elem)
+            data[elem] = []
+        end
     end
     
     return names, data
@@ -110,7 +112,7 @@ function _read_data(file_name)
         for line in readlines(file)
             splt = split(line, " ")
             len = length(splt)
-
+            
             if len > 1 && splt[1] == "Step"
                 found = true
                 data_loc = Dict()
@@ -121,17 +123,17 @@ function _read_data(file_name)
                 read = true
                 continue
             end
-
+            
             if found && read && length(splt) != length(names)
                 found = false
                 read = false
                 push!(data, data_loc)
             end
-
+            
             if found == true && read == true
                 try
-                    for i in 1:length(names)
-                        data_loc[names[i]].append(float(splt[i]))
+                    for i in eachindex(names)
+                        push!(data_loc[names[i]], parse(Float64, splt[i]))
                     end
                 catch err
                     break
@@ -144,18 +146,21 @@ function _read_data(file_name)
 end
 
 function _read_timestep(file_path)
+    dt = -1.0
+
     open(file_path, "r") do file
         for line in readlines(file)
             splt = split(line, " ")
             len = length(splt)
     
-            if len == 2 && splt[1] == "timestep"
-                return float(splt[2])
+            if len > 1 && splt[1] == "timestep"
+                dt = parse(Float64, splt[end])
+                break
             end
         end
     end
 
-    error("timestep not found")
+    return dt
 end
 
 function read_SPARTA_log(file_path)
