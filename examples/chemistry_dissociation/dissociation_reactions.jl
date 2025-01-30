@@ -27,10 +27,10 @@ t, T_NO = get_Tvib(300, "NO")
 t, T_N2 = get_Tvib(300, "N2")
 t, T_O2 = get_Tvib(300, "O2")
 
-p = plot(t, T, line = 2, label="T - conit")
-plot!(t, T_NO)
-plot!(t, T_N2)
-plot!(t, T_O2)
+p = plot(t, T, line = 2, label="T - conit", linecolor=:black)
+plot!(t, T_NO, line = 2, label="Tv NO - conit", linecolor=:blue)
+plot!(t, T_N2, line = 2, label="Tv N2 - conit", linecolor=:green)
+plot!(t, T_O2, line = 2, label="Tv O2 - conit", linecolor=:red)
 
 t_fp = log.dt * log.data[1]["Step"]
 T_fp = log.data[1]["c_red_temp"]
@@ -38,10 +38,10 @@ Tv_NO = log.data[1]["c_red_tvib_NO"]
 Tv_N2 = log.data[1]["c_red_tvib_N2"]
 Tv_O2 = log.data[1]["c_red_tvib_O2"]
 
-plot!(t_fp, T_fp, line = (2, :dashdot), label="T - FP")
-plot!(t_fp, Tv_NO, line = (3, :dashdot))
-plot!(t_fp, Tv_N2, line = (3, :dashdot))
-plot!(t_fp, Tv_O2, line = (3, :dashdot))
+plot!(t_fp, T_fp, line = (2, :dashdot), label="T - FP", linecolor=:black)
+plot!(t_fp, Tv_NO, line = (2, :dashdot), label="Tv NO - FP", linecolor=:blue)
+plot!(t_fp, Tv_N2, line = (2, :dashdot), label="Tv N2 - FP", linecolor=:green)
+plot!(t_fp, Tv_O2, line = (2, :dashdot), label="Tv O2 - FP", linecolor=:red)
 
 xlabel!(L"t / s")
 ylabel!(L"T / K")
