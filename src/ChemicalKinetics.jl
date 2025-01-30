@@ -18,6 +18,7 @@ export get_nrho
 export add_reactions!
 export write2csv
 export write2netCDF
+export read_SPARTA_log
 
 include("Gas.jl")
 include("Reader.jl")
