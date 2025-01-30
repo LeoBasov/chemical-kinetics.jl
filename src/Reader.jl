@@ -174,6 +174,10 @@ function _read_timestep(file_path)
         end
     end
 
+    if dt <= 0.0
+        throw("time step not found in log file")
+    end
+
     return dt
 end
 
