@@ -1,3 +1,125 @@
+SPARTA (18 Jul 2022  - FP 6.0.1 - chemistry_delta_e 0.2.0 - ein_ave - ekin_c- clean)
+Running on 12 MPI task(s)
+################################################################################
+# thermal gas in a 3d box with collisions and chemistry
+# particles reflect off global box boundaries
+#
+# Note:
+#  - The "comm/sort” option to the “global” command is used to match MPI runs.
+#  - The “twopass” option is used to match Kokkos runs.
+# The "comm/sort" and "twopass" options should not be used for production runs.
+################################################################################
+
+seed 123456 #73242
+dimension   	    3
+global              gridcut 1.0e-5 comm/sort yes
+
+boundary	    r r r
+
+create_box  	    0 0.0001 0 0.0001 0 0.0001
+Created orthogonal box = (0 0 0) to (0.0001 0.0001 0.0001)
+create_grid 	    2 2 2
+WARNING: Could not acquire nearby ghost cells b/c grid partition is not clumped (/home/arwen/baso_le/DLRGitLab/sparta-fp/src/grid.cpp:517)
+Created 8 child grid cells
+  CPU time = 0.00258007 secs
+  create/ghost percent = 94.0105 5.98945
+
+balance_grid        rcb part
+Balance grid migrated 7 cells
+  CPU time = 0.00306216 secs
+  reassign/sort/migrate/ghost percent = 25.7024 0.330192 60.7195 13.2478
+
+species		    ../species_data/air.species NO N N2 O O2
+
+mixture         NO NO temp 10000.0 nrho 0.2E23
+mixture         N2 N2 temp 10000.0 nrho 0.2E23
+mixture         N N temp 10000.0 nrho 0.2E23
+mixture         O2 O2 temp 10000.0 nrho 0.2E23
+mixture         O O temp 10000.0 nrho 0.2E23
+
+global              fnum 1E6
+
+hybrid set_fp
+lmixfokkerplanck basic all
+lmixfokkerplanck_modify ../species_data/air.vss ave 2e12 3e12 0.01 VHS yes rotate clt vibrate dlt  moment_int complex thermo_diffusion yes linear_model no relax variable
+
+collide		    vss all ../species_data/air.vss relax variable
+collide_modify rotate smooth vibrate discrete
+react fp ../species_data/new_sparta_N2O2diss.tce
+
+create_particles    NO n 0 twopass
+Created 20000 particles
+  CPU time = 0.00375437 secs
+create_particles    N2 n 0 twopass
+Created 20000 particles
+  CPU time = 0.000978811 secs
+create_particles    N n 0 twopass
+Created 20000 particles
+  CPU time = 0.000804039 secs
+create_particles    O2 n 0 twopass
+Created 20000 particles
+  CPU time = 0.000999096 secs
+create_particles    O n 0 twopass
+Created 20000 particles
+  CPU time = 0.000793448 secs
+
+compute temp thermal/grid all all temp
+compute trot grid all all trot
+
+compute tvib_NO tvib/grid all NO
+compute tvib_N2 tvib/grid all N2
+compute tvib_O2 tvib/grid all O2
+
+compute red_temp reduce ave c_temp[*]
+compute red_trot reduce ave c_trot[*]
+
+compute red_tvib_NO reduce ave c_tvib_NO[*]
+compute red_tvib_N2 reduce ave c_tvib_N2[*]
+compute red_tvib_O2 reduce ave c_tvib_O2[*]
+
+compute	nrho_NO grid all NO nrho
+compute	nrho_N2 grid all N2 nrho
+compute	nrho_N grid all N nrho
+compute	nrho_O2 grid all O2 nrho
+compute	nrho_O grid all O nrho
+
+compute red_nrho_NO reduce ave c_nrho_NO[*]
+compute red_nrho_N reduce ave c_nrho_N[*]
+compute red_nrho_N2 reduce ave c_nrho_N2[*]
+compute red_nrho_O2 reduce ave c_nrho_O2[*]
+compute red_nrho_O reduce ave c_nrho_O[*]
+
+compute	n_NO grid all NO n
+compute	n_N2 grid all N2 n
+compute	n_N grid all N n
+compute	n_O2 grid all O2 n
+compute	n_O grid all O n
+
+compute red_n_NO reduce ave c_n_NO[*]
+compute red_n_N reduce ave c_n_N[*]
+compute red_n_N2 reduce ave c_n_N2[*]
+compute red_n_O2 reduce ave c_n_O2[*]
+compute red_n_O reduce ave c_n_O[*]
+
+compute ke grid all species ke
+compute erot grid all species erot
+compute evib grid all species evib
+
+compute red_ke reduce ave c_ke[*]
+compute red_erot reduce ave c_erot[*]
+compute red_evib reduce ave c_evib[*]
+
+stats		    10
+stats_style	    step cpu c_red_temp c_red_trot c_red_tvib_NO c_red_tvib_N2 c_red_tvib_O2 c_red_nrho_NO c_red_nrho_N c_red_nrho_N2 c_red_nrho_O2 c_red_nrho_O c_red_n_NO c_red_n_N c_red_n_N2 c_red_n_O2 c_red_n_O  c_red_ke[*] c_red_erot[*] c_red_evib[*]
+
+timestep 	    1.00E-8
+run 		    4000
+Memory usage per proc in Mbytes:
+  particles (ave,min,max) = 1.375 0 2.0625
+  grid      (ave,min,max) = 1.56588 0.0762939 1.70129
+  surf      (ave,min,max) = 0 0 0
+  total     (ave,min,max) = 2.94115 0.0762939 3.76421
+Step CPU c_red_temp c_red_trot c_red_tvib_NO c_red_tvib_N2 c_red_tvib_O2 c_red_nrho_NO c_red_nrho_N c_red_nrho_N2 c_red_nrho_O2 c_red_nrho_O c_red_n_NO c_red_n_N c_red_n_N2 c_red_n_O2 c_red_n_O c_red_ke[1] c_red_ke[2] c_red_ke[3] c_red_ke[4] c_red_ke[5] c_red_erot[1] c_red_erot[2] c_red_erot[3] c_red_erot[4] c_red_erot[5] c_red_evib[1] c_red_evib[2] c_red_evib[3] c_red_evib[4] c_red_evib[5] 
        0            0    10002.562    9958.6687    9951.5596    10131.438     10017.17        2e+22        2e+22        2e+22        2e+22        2e+22         2500         2500         2500         2500         2500 2.0852406e-19 2.0395722e-19 2.0894198e-19 2.0665029e-19 2.0772299e-19 1.3776119e-19            0 1.3665184e-19            0 1.3806969e-19 1.1948006e-19            0 1.178972e-19            0 1.2331259e-19 
       10   0.12134306     9043.007    9501.3852    9832.3785    9956.9303    9045.0718        2e+22   2.0046e+22   1.9977e+22   1.6503e+22   2.6994e+22         2500      2505.75     2497.125     2062.875      3374.25 1.9287478e-19 1.8918911e-19 1.9214319e-19 1.7737299e-19 1.8856961e-19 1.3242497e-19            0 1.3435519e-19            0 1.2584496e-19 1.1784483e-19            0 1.1551074e-19            0 1.0995393e-19 
       20   0.19002709    8569.0751    9020.9073    9706.7178    9802.9364    8405.9781        2e+22   2.0064e+22   1.9968e+22    1.443e+22    3.114e+22         2500         2508         2496      1803.75       3892.5 1.8129475e-19 1.7942696e-19 1.807927e-19 1.7163494e-19 1.7754498e-19 1.2612355e-19            0 1.2880329e-19            0 1.1645832e-19 1.1612105e-19            0 1.1340526e-19            0 1.0117941e-19 
@@ -399,3 +521,65 @@
     3980    28.871182    5614.4529    5659.0787    6066.7174    6443.5969    4931.4213        2e+22   2.0114e+22   1.9943e+22      7.9e+19   5.9842e+22         2500      2514.25     2492.875        9.875      7480.25 1.1628606e-19 1.1629204e-19 1.1628493e-19 1.1627933e-19 1.1380814e-19 7.8544093e-20            0 7.7721025e-20            0 6.9952249e-20 6.6388372e-20            0 6.7712738e-20            0 5.3843098e-20 
     3990    28.941215    5617.1288    5650.3596    6059.6203    6444.6769    4585.0045        2e+22   2.0114e+22   1.9943e+22      7.8e+19   5.9844e+22         2500      2514.25     2492.875         9.75       7480.5 1.1634408e-19 1.1630143e-19 1.1635075e-19 1.1633688e-19 1.1602859e-19 7.7994705e-20            0 7.8002675e-20            0 7.575046e-20 6.6292193e-20            0 6.7727954e-20            0 4.9071961e-20 
     4000    29.011639    5614.3791    5667.1337    6057.6821    6438.2585    4772.7509        2e+22   2.0114e+22   1.9943e+22      7.8e+19   5.9844e+22         2500      2514.25     2492.875         9.75       7480.5  1.16286e-19 1.1627927e-19 1.1628677e-19 1.1627466e-19 1.1115598e-19 7.8002145e-20            0 7.8481454e-20            0 7.9530549e-20 6.626513e-20            0 6.764103e-20            0 5.1665571e-20 
+Loop time of 29.0117 on 12 procs for 4000 steps with 119979 particles
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Move    | 0.0011099  | 1.1843     | 1.8254     |  76.9 |  4.08
+Coll    | 0.0010225  | 14.762     | 22.522     | 271.7 | 50.88
+Sort    | 0.00059864 | 0.48162    | 0.74897    |  49.1 |  1.66
+Comm    | 0.85671    | 1.728      | 2.1996     |  46.4 |  5.96
+Modify  | 0          | 0          | 0          |   0.0 |  0.00
+Output  | 0.79589    | 1.6394     | 3.2333     |  88.0 |  5.65
+Other   |            | 9.217      |            |       | 31.77
+
+Particle moves    = 474536853 (475M)
+Cells touched     = 656277886 (656M)
+Particle comms    = 159082972 (159M)
+Boundary collides = 181747337 (182M)
+Boundary exits    = 0 (0K)
+SurfColl checks   = 0 (0K)
+SurfColl occurs   = 0 (0K)
+Surf reactions    = 0 (0K)
+Collide attempts  = 0 (0K)
+Collide occurs    = 0 (0K)
+Reactions         = 0 (0K)
+Particles stuck   = 0
+Axisymm bad moves = 0
+
+Particle-moves/CPUsec/proc: 1.36306e+06
+Particle-moves/step: 118634
+Cell-touches/particle/step: 1.38299
+Particle comm iterations/step: 1
+Particle fraction communicated: 0.335238
+Particle fraction colliding with boundary: 0.382999
+Particle fraction exiting boundary: 0
+Surface-checks/particle/step: 0
+Surface-collisions/particle/step: 0
+Surf-reactions/particle/step: 0
+Collision-attempts/particle/step: 0
+Collisions/particle/step: 0
+Reactions/particle/step: 0
+
+Gas reaction tallies:
+  style fp #-of-reactions 10
+  reaction O2 + N --> O + O + N: 5890
+  reaction O2 + NO --> O + O + NO: 1234
+  reaction O2 + N2 --> O + O + N2: 1158
+  reaction O2 + O2 --> O + O + O2: 672
+  reaction O2 + O --> O + O + O: 10968
+  reaction N2 + O --> N + N + O: 19
+  reaction N2 + O2 --> N + N + O2: 5
+  reaction N2 + NO --> N + N + NO: 4
+  reaction N2 + N2 --> N + N + N2: 6
+  reaction N2 + N --> N + N + N: 23
+
+Particles: 9998.25 ave 15199 max 0 min
+Histogram: 4 0 0 0 0 0 0 0 0 8
+Cells:      0.666667 ave 1 max 0 min
+Histogram: 4 0 0 0 0 0 0 0 0 8
+GhostCell: 4.66667 ave 7 max 0 min
+Histogram: 4 0 0 0 0 0 0 0 0 8
+EmptyCell: 0 ave 0 max 0 min
+Histogram: 12 0 0 0 0 0 0 0 0 0
