@@ -87,15 +87,26 @@ function read_reactions(file_name)
     return reactions
 end
 
+function _split(string)
+    splt = split(string, " ")
+    res = []
+
+    for elem in splt
+        if elem != ""
+            push!(res, elem)
+        end
+    end
+
+    return res
+end
+
 function _setup_data(splt)
     data = Dict()
     names = []
     
     for elem in splt
-        if elem != ""
-            push!(names, elem)
-            data[elem] = []
-        end
+        push!(names, elem)
+        data[elem] = []
     end
     
     return names, data
@@ -110,7 +121,7 @@ function _read_data(file_name)
 
     open(file_name, "r") do file
         for line in readlines(file)
-            splt = split(line, " ")
+            splt = _split(line)
             len = length(splt)
             
             if len > 1 && splt[1] == "Step"
@@ -133,7 +144,10 @@ function _read_data(file_name)
             if found == true && read == true
                 try
                     for i in eachindex(names)
-                        push!(data_loc[names[i]], parse(Float64, splt[i]))
+                        name = names[i]
+                        val = parse(Float64, splt[i])
+
+                        push!(data_loc[name], val)
                     end
                 catch err
                     break
@@ -150,7 +164,7 @@ function _read_timestep(file_path)
 
     open(file_path, "r") do file
         for line in readlines(file)
-            splt = split(line, " ")
+            splt = _split(line)
             len = length(splt)
     
             if len > 1 && splt[1] == "timestep"
