@@ -18,6 +18,7 @@ export get_nrho
 export add_reactions!
 export write2csv
 export write2netCDF
+export read_SPARTA_log
 
 include("Gas.jl")
 include("Reader.jl")
@@ -30,6 +31,12 @@ _verbose::Bool = true
 _solution = nothing
 _tmax::Number = 0.0
 
+function _print(str)
+    if _verbose == true
+        println(str)
+    end
+end
+
 function add_reactions!(file_name)
     reactions = read_reactions(file_name)
 
@@ -37,7 +44,7 @@ function add_reactions!(file_name)
         push!(_state.reactions, reaction)
     end
 
-    println(string(length(reactions)) * " reactions added")
+    _print(string(length(reactions)) * " reactions added")
 end
 
 function get_nrho(N)
@@ -169,12 +176,12 @@ function execute!(tmax)
 
     _state.reactions = reactions
 
-    println(string(N_pre - length(_state.reactions)) * " reactions removed due to missing species")
+    _print(string(N_pre - length(_state.reactions)) * " reactions removed due to missing species")
 
     # check species for polyatomic speices in combnation with relax mode
     for species in _state.species
         if length(species.second.vibmodes) > 1
-            println("WARNING: variable collision numbers are not implemented for polyatomic species")
+            _print("WARNING: variable collision numbers are not implemented for polyatomic species")
             set_relax_mode!("constant")
             break
         end
@@ -183,6 +190,8 @@ function execute!(tmax)
     global _tmax = tmax / t_tilde
     problem = setup_problem!(_state, _tmax)
     global _solution =  solve(problem, alg_hints = [:stiff])
+
+    _print("finished executing for tmax: [" * string(tmax) * "]")
 end
 
 function initialize!(;verbose::Bool = true)
@@ -190,6 +199,9 @@ function initialize!(;verbose::Bool = true)
     global _verbose = verbose
     global _solution = nothing
     global _tmax = 0.0
+
+    _print("CHEMICAL KINETICS")
+    _print("=================")
 end
 
 function  set_verbosity!(verbose)
@@ -198,17 +210,13 @@ end
 
 function set_nrho!(nrho)
     _state.nrho = nrho
-    if _verbose == true
-        println("set nrho to: " * string(_state.nrho))
-    end
+    _print("set nrho to: " * string(_state.nrho))
 end
 
 function set_T!(T)
     _state.T = T
 
-    if _verbose == true
-        println("set T to: " * string(_state.T))
-    end
+        _print("set T to: " * string(_state.T))
 
     for species in _state.species
         set_Tvib!(species.first, T)
@@ -228,9 +236,7 @@ function set_Tvib!(species_name, Tvib)
         error("wrong Tvib format")
     end
 
-    if _verbose == true
-        println("set Tvib of[" * species_name * "] to: " * string(_state.Tvib[species_name]))
-    end 
+    _print("set Tvib of[" * species_name * "] to: " * string(_state.Tvib[species_name]))
 end
 
 function set_Zvib!(species_name, Zvib)
@@ -248,16 +254,12 @@ function set_Zvib!(species_name, Zvib)
         error("wrong Zvib format")
     end
 
-    if _verbose == true
-        println("set Zvib of[" * species_name * "] to: " * string(Zvib))
-    end 
+    _print("set Zvib of[" * species_name * "] to: " * string(Zvib))
 end
 
 function set_molefrac!(species_name, mole_frac)
     _state.mole_fractions[species_name] = mole_frac
-    if _verbose == true
-        println("set mole fraction of [" * species_name * "] to: " * string(mole_frac))
-    end
+    _print("set mole fraction of [" * species_name * "] to: " * string(mole_frac))
 end
 
 function set_relax_mode!(mode::String)
@@ -269,15 +271,13 @@ function set_relax_mode!(mode::String)
         error("undefined relax mode: [" * mode * "]")
     end
 
-    println("set relax mode to: [" * mode * "]")
+    _print("set relax mode to: [" * mode * "]")
 end
 
 function add_species!(file_name; mole_frac = 0.0)
     species = read_species(file_name)
     _add_species!(_state, species)
-    if _verbose == true
-        println("added species [" * species.name * "]")
-    end
+    _print("added species [" * species.name * "]")
     set_molefrac!(species.name, mole_frac)
 end
 
