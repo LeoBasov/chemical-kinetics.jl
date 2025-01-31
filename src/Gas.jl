@@ -57,7 +57,7 @@ mutable struct State
     Tvib::Dict{String, Vector{Float64}}
     species::Dict{String, Species}
     evib_offset::Dict{String, Integer}
-    molefrac_offset::Dict{String, Integer}
+    nrho_offset::Dict{String, Integer}
     reactions::Vector{Reaction}
     constant_relax_mode::Bool 
 

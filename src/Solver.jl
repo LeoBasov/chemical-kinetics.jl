@@ -6,14 +6,15 @@ function calc_coll_number(T::Float64, spec_data::VHS)
 end
 
 function f(u, state, t)
+    #TODO: calculate molefractions needed for calculation of Tfrac and evib
+
     T = u[1]
     du = zeros(length(u))
     Tfrac = calc_Tfrac(u, state)
     nrho = 0.0
 
     for species in state.species
-        mole_fraction = u[1 + state.molefrac_offset[species.first]]
-        nrho += mole_fraction * state.nrho
+        nrho += u[1 + state.nrho_offset[species.first]]
     end
     
     for reaction in state.reactions
@@ -21,20 +22,19 @@ function f(u, state, t)
         nu = k
 
         for reactant in reaction.reactants
-            mole_fraction = u[1 + state.molefrac_offset[reactant]]
-            nu *= mole_fraction
+            nu *= u[1 + state.nrho_offset[reactant]]
         end
 
-        nu *= t_tilde * nrho * nrho / state.nrho
+        nu *= t_tilde
         du[1] += nu * Tfrac * reaction.DeltaE / kb 
 
         for species_name in keys(reaction.stochio_coeff)
-            du[1 + state.molefrac_offset[species_name]] += reaction.stochio_coeff[species_name] * nu
+            du[1 + state.nrho_offset[species_name]] += reaction.stochio_coeff[species_name] * nu
         end
     end
 
     for species in state.species
-        mole_fraction = u[1 + state.molefrac_offset[species.first]]
+        mole_fraction = u[1 + state.nrho_offset[species.first]]
         nu = calc_coll_freq(species.second, nrho, T) * t_tilde
         eeq = calc_evib(T, species.second, mole_fraction) / kb
         N_vibmodes = length(species.second.vibmodes)
@@ -46,7 +46,7 @@ function f(u, state, t)
             tau = Z / nu
             de = (eeq[v] - u[v + evib_offset]) / tau
             du[1] -= de * Tfrac
-            du[v + evib_offset] = de + du[1 + state.molefrac_offset[species.first]] * u[v + evib_offset] / mole_fraction
+            du[v + evib_offset] = de + du[1 + state.nrho_offset[species.first]] * u[v + evib_offset] / mole_fraction
         end
     end
 
@@ -67,7 +67,7 @@ function calc_Tfrac(u, state)
     Tfrac = 1.5
 
     for species in state.species
-        mole_fraction = u[1 + state.molefrac_offset[species.first]]
+        mole_fraction = u[1 + state.nrho_offset[species.first]]
         Tfrac += 0.5 * mole_fraction * species.second.dof_rot
     end
 
@@ -78,7 +78,7 @@ function setup_problem!(state, tmax)
     u0::Vector{Float64} = []
     tspan = (0, tmax)
     evib_offset::Integer = 1
-    molefrac_offset::Integer = 1
+    nrho_offset::Integer = 1
 
     push!(u0, state.T)
 
@@ -93,12 +93,12 @@ function setup_problem!(state, tmax)
         end
     end
 
-    molefrac_offset = evib_offset
+    nrho_offset = evib_offset
 
     for species in state.species
-        state.molefrac_offset[species.first] = molefrac_offset
-        molefrac_offset += 1
-        push!(u0, state.mole_fractions[species.first])
+        state.nrho_offset[species.first] = nrho_offset
+        nrho_offset += 1
+        push!(u0, state.mole_fractions[species.first] * state.nrho)
     end
 
     return ODEProblem(f, u0, tspan, state);

@@ -49,10 +49,10 @@ end
 
 function get_nrho(N)
     t = []
-    X = []
+    nrho = []
 
     for i in 1:length(_state.species)
-        push!(X, [])
+        push!(nrho, [])
     end
 
     for tt in range(0, _tmax, N)
@@ -60,15 +60,12 @@ function get_nrho(N)
         i = 1
 
         for species in _state.species
-            molde_fraction = _solution(tt)[1 + _state.molefrac_offset[species.first]]
-            push!(X[i], molde_fraction)
+            push!(nrho[i], _solution(tt)[1 + _state.nrho_offset[species.first]])
             i += 1
         end
     end
 
-    X *= _state.nrho
-
-    return t, X
+    return t, nrho
 end
 
 function get_molefrac(N)
@@ -84,7 +81,7 @@ function get_molefrac(N)
         i = 1
 
         for species in _state.species
-            molde_fraction = _solution(tt)[1 + _state.molefrac_offset[species.first]]
+            molde_fraction = _solution(tt)[1 + _state.nrho_offset[species.first]]
             push!(X[i], molde_fraction)
             i += 1
         end
@@ -140,7 +137,7 @@ function get_Tvib(N, species_name)
         push!(t, tt)
 
         for i in 1:Nvibmode
-            mole_fraciont = _solution(tt)[1 + _state.molefrac_offset[species_name]]
+            mole_fraciont = _solution(tt)[1 + _state.nrho_offset[species_name]]
             theta = _state.species[species_name].vibmodes[i].theta
             degen = _state.species[species_name].vibmodes[i].degen
             f(x, p = (1, 1)) = mole_fraciont * calc_evib_kb(x, p) - _solution(tt)[i + _state.evib_offset[species_name]]
