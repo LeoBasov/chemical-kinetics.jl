@@ -136,17 +136,12 @@ function get_Tvib(N, species_name)
 
     for tt in range(0, _tmax, N)
         push!(t, tt)
-        nrho = 0.0
-
-        for species in _state.species
-            nrho += _solution(tt)[1 + _state.nrho_offset[species.first]]
-        end
 
         for i in 1:Nvibmode
-            mole_fraciont = _solution(tt)[1 + _state.nrho_offset[species_name]] / nrho
+            nrho_spec = _solution(tt)[1 + _state.nrho_offset[species_name]]
             theta = _state.species[species_name].vibmodes[i].theta
             degen = _state.species[species_name].vibmodes[i].degen
-            f(x, p = (1, 1)) = mole_fraciont * calc_evib_kb(x, p) - _solution(tt)[i + _state.evib_offset[species_name]]
+            f(x, p = (1, 1)) = calc_evib_kb(x, p) - _solution(tt)[i + _state.evib_offset[species_name]] / nrho_spec
             Z = ZeroProblem(f, 1000)
             Tvib = solve(Z, Order1(), p=(theta, degen))
 
