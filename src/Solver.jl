@@ -34,9 +34,9 @@ function f(u, state, t)
     end
 
     for species in state.species
-        mole_fraction = u[1 + state.nrho_offset[species.first]]
+        nrho_spec = u[1 + state.nrho_offset[species.first]]
         nu = calc_coll_freq(species.second, nrho, T) * t_tilde
-        eeq = calc_evib(T, species.second, mole_fraction) / kb
+        eeq = calc_evib(T, species.second, nrho_spec) / kb
         N_vibmodes = length(species.second.vibmodes)
         evib_offset = state.evib_offset[species.first]
 
@@ -46,7 +46,7 @@ function f(u, state, t)
             tau = Z / nu
             de = (eeq[v] - u[v + evib_offset]) / tau
             du[1] -= de * Tfrac
-            du[v + evib_offset] = de + du[1 + state.nrho_offset[species.first]] * u[v + evib_offset] / mole_fraction
+            du[v + evib_offset] = de + du[1 + state.nrho_offset[species.first]] * u[v + evib_offset] / nrho_spec
         end
     end
 
@@ -112,7 +112,7 @@ function calc_evib_kb(T, p)
     p[2] * p[1] / (exp(p[1]/T) - 1.0)
 end
 
-function calc_evib(Tvib, species, mole_fraction)
+function calc_evib(Tvib, species, nrho_spec)
     evib = []
 
     for i in eachindex(species.vibmodes)
@@ -127,7 +127,7 @@ function calc_evib(Tvib, species, mole_fraction)
         end
     end
 
-    return mole_fraction * evib
+    return nrho_spec * evib
 end
 
 function calc_etot(state)
