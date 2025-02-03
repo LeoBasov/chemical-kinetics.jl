@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.0] - 2025-02-03
+
+### Changed
+
+- refactored solver to work with number densities instead of mole fractions
+
+## [Unreleased]
+
 ## [0.6.1] - 2025-01-31
 
 ### Fixed
