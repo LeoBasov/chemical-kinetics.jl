@@ -16,6 +16,7 @@ add_reactions!("examples/air_chemistry/air_chemistry.json")
 
 set_T!(10000)
 set_nrho!(1e23)
+set_relax_mode!("variable")
 
 execute!(1e-5)
 
