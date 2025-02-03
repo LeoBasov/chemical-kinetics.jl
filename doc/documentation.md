@@ -21,7 +21,7 @@ e = e_{kin} + e_{rot} = \frac{1}{2} k_B T  \left(3 n_t +  \sum_s n_{s} \xi_s \ri
 $$
 with the curret temperature being calculated as
 $$
-T(t) = \frac{2 e(t)}{k_B T  \left(3 n_t +  \sum_s n_{s} \xi_s \right)}.
+T(t) = \frac{2 e(t)}{k_B  \left(3 n_t +  \sum_s n_{s} \xi_s \right)}.
 $$
 
 ## Vibrational  relaxation
