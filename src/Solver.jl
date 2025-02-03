@@ -27,7 +27,7 @@ function f(u, state, t)
         end
 
         nu *= t_tilde
-        du[1] += nu * Tfrac * reaction.DeltaE / kb 
+        du[1] += nu * Tfrac * reaction.DeltaE / kb / nrho
 
         for species_name in keys(reaction.stochio_coeff)
             du[1 + state.nrho_offset[species_name]] += reaction.stochio_coeff[species_name] * nu
@@ -46,9 +46,9 @@ function f(u, state, t)
             vibmode = species.second.vibmodes[v]
             Z = state.constant_relax_mode == true ? vibmode.Z : calc_coll_number(u[1], species.second.vhs)
             tau = Z / nu
-            de = (eeq[v] - u[v + evib_offset]) / tau
+            de = (eeq[v] - u[v + evib_offset]) / tau + du[1 + state.nrho_offset[species.first]] * u[v + evib_offset] / nrho
             du[1] -= de * Tfrac
-            du[v + evib_offset] = de + du[1 + state.nrho_offset[species.first]] * u[v + evib_offset] / state.nrho
+            du[v + evib_offset] = de 
         end
     end
 
