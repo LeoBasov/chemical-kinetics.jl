@@ -22,7 +22,8 @@ function f(u, state, t)
         nu = k
 
         for reactant in reaction.reactants
-            nu *= u[1 + state.nrho_offset[reactant]]
+            nrho_reactant = u[1 + state.nrho_offset[reactant]]
+            nu *= nrho_reactant
         end
 
         nu *= t_tilde
@@ -34,9 +35,10 @@ function f(u, state, t)
     end
 
     for species in state.species
-        nrho_spec = u[1 + state.nrho_offset[species.first]]
+        nrho_spec = u[1 + state.nrho_offset[species.first]] 
+        mole_frac = nrho_spec / nrho
         nu = calc_coll_freq(species.second, nrho, T) * t_tilde
-        eeq = calc_evib(T, species.second, nrho_spec) / kb
+        eeq = calc_evib(T, species.second, mole_frac) / kb
         N_vibmodes = length(species.second.vibmodes)
         evib_offset = state.evib_offset[species.first]
 
@@ -46,7 +48,7 @@ function f(u, state, t)
             tau = Z / nu
             de = (eeq[v] - u[v + evib_offset]) / tau
             du[1] -= de * Tfrac
-            du[v + evib_offset] = de + du[1 + state.nrho_offset[species.first]] * u[v + evib_offset] / nrho_spec
+            du[v + evib_offset] = de + du[1 + state.nrho_offset[species.first]] * u[v + evib_offset] / state.nrho
         end
     end
 
@@ -65,9 +67,14 @@ end
 
 function calc_Tfrac(u, state)
     Tfrac = 1.5
+    nrho = 0.0
 
     for species in state.species
-        mole_fraction = u[1 + state.nrho_offset[species.first]]
+        nrho += u[1 + state.nrho_offset[species.first]]
+    end
+
+    for species in state.species
+        mole_fraction = u[1 + state.nrho_offset[species.first]] / nrho
         Tfrac += 0.5 * mole_fraction * species.second.dof_rot
     end
 
@@ -112,7 +119,7 @@ function calc_evib_kb(T, p)
     p[2] * p[1] / (exp(p[1]/T) - 1.0)
 end
 
-function calc_evib(Tvib, species, nrho_spec)
+function calc_evib(Tvib, species, mole_frac)
     evib = []
 
     for i in eachindex(species.vibmodes)
@@ -127,5 +134,5 @@ function calc_evib(Tvib, species, nrho_spec)
         end
     end
 
-    return nrho_spec * evib
+    return mole_frac * evib
 end
