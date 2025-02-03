@@ -27,7 +27,7 @@ function f(u, state, t)
         end
 
         nu *= t_tilde
-        du[1] += nu * Tfrac * reaction.DeltaE / kb / nrho
+        du[1] += nu * Tfrac * reaction.DeltaE / kb
 
         for species_name in keys(reaction.stochio_coeff)
             du[1 + state.nrho_offset[species_name]] += reaction.stochio_coeff[species_name] * nu
@@ -36,9 +36,8 @@ function f(u, state, t)
 
     for species in state.species
         nrho_spec = u[1 + state.nrho_offset[species.first]] 
-        mole_frac = nrho_spec / nrho
         nu = calc_coll_freq(species.second, nrho, T) * t_tilde
-        eeq = calc_evib(T, species.second, mole_frac) / kb
+        eeq = calc_evib(T, species.second, nrho_spec) / kb
         N_vibmodes = length(species.second.vibmodes)
         evib_offset = state.evib_offset[species.first]
 
@@ -46,7 +45,7 @@ function f(u, state, t)
             vibmode = species.second.vibmodes[v]
             Z = state.constant_relax_mode == true ? vibmode.Z : calc_coll_number(u[1], species.second.vhs)
             tau = Z / nu
-            de = (eeq[v] - u[v + evib_offset]) / tau + du[1 + state.nrho_offset[species.first]] * u[v + evib_offset] / nrho
+            de = (eeq[v] - u[v + evib_offset]) / tau + du[1 + state.nrho_offset[species.first]] * u[v + evib_offset] / nrho_spec
             du[1] -= de * Tfrac
             du[v + evib_offset] = de 
         end
@@ -66,19 +65,15 @@ function calc_Tfrac(state)
 end
 
 function calc_Tfrac(u, state)
-    Tfrac = 1.5
+    rot_frac = 0.0
     nrho = 0.0
 
     for species in state.species
         nrho += u[1 + state.nrho_offset[species.first]]
+        rot_frac += species.second.dof_rot * u[1 + state.nrho_offset[species.first]]
     end
 
-    for species in state.species
-        mole_fraction = u[1 + state.nrho_offset[species.first]] / nrho
-        Tfrac += 0.5 * mole_fraction * species.second.dof_rot
-    end
-
-    return 1.0 / Tfrac
+    return 2.0 / (3*nrho + rot_frac)
 end
 
 function setup_problem!(state, tmax)
@@ -90,8 +85,8 @@ function setup_problem!(state, tmax)
     push!(u0, state.T)
 
     for species in state.species
-        mole_fraction = state.mole_fractions[species.first]
-        evib = calc_evib(state.Tvib[species.first], species.second, mole_fraction) / kb
+        nrho_spec = state.mole_fractions[species.first] * state.nrho
+        evib = calc_evib(state.Tvib[species.first], species.second, nrho_spec) / kb
         state.evib_offset[species.first] = evib_offset
         evib_offset += length(evib)
     
@@ -119,7 +114,7 @@ function calc_evib_kb(T, p)
     p[2] * p[1] / (exp(p[1]/T) - 1.0)
 end
 
-function calc_evib(Tvib, species, mole_frac)
+function calc_evib(Tvib, species, nrho_spec)
     evib = []
 
     for i in eachindex(species.vibmodes)
@@ -134,7 +129,7 @@ function calc_evib(Tvib, species, mole_frac)
         end
     end
 
-    return mole_frac * evib
+    return nrho_spec * evib
 end
 
 
