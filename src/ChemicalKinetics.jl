@@ -168,6 +168,10 @@ function execute!(tmax)
         for species in _state.species
             set_molefrac!(species.first, mole_frac)
         end
+    elseif total_mole_frac > 1.0
+        error("total mole fraction > 1.0")
+    elseif total_mole_frac > 0.0 && total_mole_frac < 1.0
+        error("total mole fraction > 0.0 but < 1.0")
     end
 
     # check reations
