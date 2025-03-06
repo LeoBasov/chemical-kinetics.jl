@@ -153,6 +153,23 @@ function get_Tvib(N, species_name)
 end
 
 function execute!(tmax)
+    # check mole fractions
+    total_mole_frac = 0.0
+
+    for mole_frac in _state.mole_fractions
+        total_mole_frac += mole_frac.second
+    end
+
+    if total_mole_frac <= 0.0
+        mole_frac = 1.0 / length(_state.mole_fractions)
+
+        _print("WARNING: total mole fraction <= 0.0, adjusted to " * string(mole_frac))
+
+        for species in _state.species
+            set_molefrac!(species.first, mole_frac)
+        end
+    end
+
     # check reations
     reactions = []
     N_pre = length(_state.reactions)
