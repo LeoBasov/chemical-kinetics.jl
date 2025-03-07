@@ -1,6 +1,7 @@
 using ChemicalKinetics
 using Plots
 using Roots
+using LaTeXStrings
 
 function read_log(file_name)
     data = [[], [], [], [], [], [], [], [], [], []]
