@@ -57,17 +57,17 @@ nrho_N = log.data[1]["c_red_nrho_N"]
 nrho_O2 = log.data[1]["c_red_nrho_O2"]
 nrho_O = log.data[1]["c_red_nrho_O"]
 
-p = plot(t_fp, nrho_NO, line = (2, :dashdot), label="N2")
-plot!(t_fp, nrho_N2, line = (2, :dashdot), label="O2")
-plot!(t_fp, nrho_N, line = (2, :dashdot), label="O")
-plot!(t_fp, nrho_O2, line = (2, :dashdot), label="NO")
-plot!(t_fp, nrho_O, line = (2, :dashdot), label="N")
+p = plot(t_fp, nrho_NO, line = (2, :dashdot), label="NO", linecolor="black")
+plot!(t_fp, nrho_N2, line = (2, :dashdot), label="N2", linecolor="red")
+plot!(t_fp, nrho_N, line = (2, :dashdot), label="N", linecolor="green")
+plot!(t_fp, nrho_O2, line = (2, :dashdot), label="O2", linecolor="blue")
+plot!(t_fp, nrho_O, line = (2, :dashdot), label="O", linecolor="orange")
 
-plot!(t, nrho[1], line = 2, label="NO")
-plot!(t, nrho[2], line = 2, label="N2")
-plot!(t, nrho[3], line = 2, label="N")
-plot!(t, nrho[4], line = 2, label="O2")
-plot!(t, nrho[5], line = 2, label="O")
+plot!(t, nrho["O2"], line = 2, label="O2", linecolor="blue")
+plot!(t, nrho["NO"], line = 2, label="NO", linecolor="black")
+plot!(t, nrho["O"], line = 2, label="O", linecolor="orange")
+plot!(t, nrho["N"], line = 2, label="N", linecolor="green")
+plot!(t, nrho["N2"], line = 2, label="N2", linecolor="red")
 
 xlabel!(L"t / s")
 ylabel!(L"n_{\rho} / m^{-3}")
