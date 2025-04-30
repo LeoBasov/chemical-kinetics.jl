@@ -49,19 +49,17 @@ end
 
 function get_nrho(N)
     t = []
-    nrho = []
+    nrho::Dict{String, Array} = Dict()
 
-    for i in 1:length(_state.species)
-        push!(nrho, [])
+    for species in _state.species
+        nrho[species.first] = []
     end
 
     for tt in range(0, _tmax, N)
         push!(t, tt * t_tilde)
-        i = 1
 
         for species in _state.species
-            push!(nrho[i], _solution(tt)[1 + _state.nrho_offset[species.first]])
-            i += 1
+            push!(nrho[species.first], _solution(tt)[1 + _state.nrho_offset[species.first]])
         end
     end
 

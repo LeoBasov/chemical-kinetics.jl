@@ -56,6 +56,6 @@ t, nrho = get_nrho(300)
 
 p = plot(tana, solN2, line = (2, :dashdot), label="N2 - analytic")
 plot!(tana, solN, line = (2, :dashdot), label="N - analytic")
-plot!(t, nrho[1], line=2, label="N")
-plot!(t, nrho[2], line=2, label="N2")
+plot!(t, nrho["N"], line=2, label="N")
+plot!(t, nrho["N2"], line=2, label="N2")
 display(p)
