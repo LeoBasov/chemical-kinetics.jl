@@ -21,7 +21,7 @@ set_relax_mode!("variable")
 execute!(1e-5)
 
 # plotting
-fp_data = read_SPARTA_log("examples/air_chemistry/log.sparta")
+fp_data = read_SPARTA_log("examples/air_chemistry/log_dt_1e-9_fnum_small.sparta")
 
 t, T = get_T(300)
 t, T_NO = get_Tvib(300, "NO")
@@ -72,7 +72,7 @@ plot!(t, nrho["O"], line = 2, label="O")
 xlabel!(L"t / s")
 ylabel!(L"n_{\rho} / m^{-3}")
 
-xlims!(0, 2e-6)
+#xlims!(0, 2e-6)
 
 display(p)
 
