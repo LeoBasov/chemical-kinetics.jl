@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.1] - 2025-05-06
+
+### Fixed
+
+- N2 + O --> NO + N reaction in air_chemistry.json
+
+### Added
+
+- dt=1e-9, fnum=1e5 solution for air chemistry
+
 ## [0.9.0] - 2025-04-29
 
 ### Changed
