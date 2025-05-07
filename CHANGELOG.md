@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.2] - 2025-05-07
+
+### Fixed
+
+- added fix for A + A --> type reations where both reactants are the same species
+
 ## [0.9.1] - 2025-05-06
 
 ### Fixed
