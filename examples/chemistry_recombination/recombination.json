@@ -1,0 +1,13 @@
+{
+    "reactions": [
+        {
+            "name": "O + O --> O2",
+            "Arrhenius": {
+                "A": 1e-18,
+                "B": 0,
+                "Ea": 0,
+                "DeltaE": 0
+            }
+        }
+    ]
+}
