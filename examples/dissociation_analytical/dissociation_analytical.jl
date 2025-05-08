@@ -100,3 +100,57 @@ plot!(time, nN2, line = (2, :dash), label="N2 - particle")
 display(p)
 
 println("dt: ", minimum([1e-2/a for a in A]))
+
+# per step comparison
+function calc_steps_err(nuN, nuN2, nN0, nN20, k, V, w, dt, tmax)
+    Ntime = Int(round(tmax/dt))
+    time = []
+    err = []
+    t = 0.0
+
+    for i in 1:Ntime
+        nN2_ana_pre = analytical_nN2(nN0, nN20, k, t)
+        nN_ana_pre = (nN20 - nN2_ana_pre)*2 + nN0
+
+        nN_part = Int(round(nN_ana_pre * V / w))
+        nN2_part = Int(round(nN2_ana_pre * V / w))
+
+        Nmin = min(nN_part, nN2_part)
+        Nmax = max(nN_part, nN2_part)
+        a = Nmax*w*k / V
+        R = rand(Nmin)
+        p = 1.0 - exp(-a*dt)
+
+        for j in 1:Nmin
+            if R[j] < p
+                nN_part += nuN
+                nN2_part += nuN2
+            end
+        end
+
+        nN2_ana = analytical_nN2(nN0, nN20, k, t + dt)
+        nN_ana = (nN20 - nN2_ana)*2 + nN0
+
+        push!(time, t)
+        push!(err, abs((nN2_part*w/V) - nN2_ana)/nN2_ana)
+
+        t += dt
+    end
+
+    return time, err
+end
+
+time, err = calc_steps_err(2, -1, XN*ntot, XN2*ntot, k, V, w, dt, tmax)
+Nr = 10
+
+for i in 1:Nr
+    time_loc, err_loc = calc_steps_err(2, -1, XN*ntot, XN2*ntot, k, V, w, dt, tmax)
+    global err += err_loc
+end
+
+err *= 1/(1 + Nr)
+
+plot(time, err*100, seriestype=:scatter)
+xlabel!(L"t / s")
+ylabel!(L"\frac{|\mathrm{N}_{2, ana} - \mathrm{N}_{2, part}|}{\mathrm{N}_{2, ana}}")
+title!("error")
