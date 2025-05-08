@@ -115,6 +115,9 @@ function calc_steps_err(nuN, nuN2, nN0, nN20, k, V, w, dt, tmax)
         nN_part = Int(round(nN_ana_pre * V / w))
         nN2_part = Int(round(nN2_ana_pre * V / w))
 
+        dnN_part = nN_part
+        dnN2_part = nN2_part
+
         Nmin = min(nN_part, nN2_part)
         Nmax = max(nN_part, nN2_part)
         a = Nmax*w*k / V
@@ -131,8 +134,17 @@ function calc_steps_err(nuN, nuN2, nN0, nN20, k, V, w, dt, tmax)
         nN2_ana = analytical_nN2(nN0, nN20, k, t + dt)
         nN_ana = (nN20 - nN2_ana)*2 + nN0
 
+        dnN_part = (nN_part - dnN_part) * w / V
+        dnN2_part = (nN2_part - dnN2_part) * w / V
+        dn_part = dnN_part + dnN2_part
+
+        dnN_ana = nN_ana - nN_ana_pre
+        dnN2_ana = nN2_ana - nN2_ana_pre
+        dn_ana = dnN_ana + dnN2_ana
+
         push!(time, t)
-        push!(err, abs((nN2_part*w/V) - nN2_ana)/nN2_ana)
+        #push!(err, ((dnN_part - dnN_ana)/dnN_ana))
+        push!(err, ((dn_part - dn_ana)/dn_ana)^2)
 
         t += dt
     end
@@ -144,13 +156,15 @@ time, err = calc_steps_err(2, -1, XN*ntot, XN2*ntot, k, V, w, dt, tmax)
 Nr = 10
 
 for i in 1:Nr
+    println(i)
     time_loc, err_loc = calc_steps_err(2, -1, XN*ntot, XN2*ntot, k, V, w, dt, tmax)
     global err += err_loc
 end
 
 err *= 1/(1 + Nr)
+err = [sqrt(r) for r in err]
 
-plot(time, err*100, seriestype=:scatter)
+plot(time, err, seriestype=:scatter)
 xlabel!(L"t / s")
-ylabel!(L"\frac{|\mathrm{N}_{2, ana} - \mathrm{N}_{2, part}|}{\mathrm{N}_{2, ana}}")
+ylabel!(L"\frac{|\mathrm{N}_{ana} - \mathrm{N}_{part}|}{\mathrm{N}_{ana}}")
 title!("error")
