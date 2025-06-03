@@ -14,7 +14,7 @@ add_reactions!("examples/chemistry_recombination/recombination.json")
 
 set_T!(10000)
 set_nrho!(1e23)
-#set_relax_mode!("variable")
+set_relax_mode!("variable")
 
 execute!(1e-4)
 
@@ -33,7 +33,7 @@ p = plot(t, T)
 plot!(t, T_O2)
 plot!(t_fp, T_fp)
 plot!(t_fp, Tvib_fp_O2)
-ylims!(8000, 10000)
+ylims!(1000, 11000)
 xlims!(0, 1.5e-5)
 
 display(p)
