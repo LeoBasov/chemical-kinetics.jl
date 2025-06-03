@@ -2,11 +2,13 @@ using ChemicalKinetics
 using Plots
 using LaTeXStrings
 
+kb = 1.380649e-23
+
 # simulation setup and execution
 initialize!()
 
-add_species!("data/O.json", mole_frac = 0.5)
-add_species!("data/O2.json", mole_frac = 0.5)
+add_species!("data/O.json", mole_frac = 0.9)
+add_species!("data/O2.json", mole_frac = 0.1)
 
 add_reactions!("examples/chemistry_recombination/recombination.json")
 
@@ -14,12 +16,12 @@ set_T!(10000)
 set_nrho!(1e23)
 #set_relax_mode!("variable")
 
-execute!(1.5e-5)
+execute!(1e-4)
 
 t, T = get_T(300)
 t, T_O2 = get_Tvib(300, "O2")
 
-fp_data = read_SPARTA_log("examples/chemistry_recombination/log_xO_xO2.sparta")
+fp_data = read_SPARTA_log("examples/chemistry_recombination/log.sparta")
 
 t_fp = fp_data.dt * fp_data.data[1]["Step"]
 T_fp = fp_data.data[1]["c_red_temp"]
@@ -44,3 +46,14 @@ plot!(t_fp, nrho_O_fp)
 plot!(t_fp, nrho_O2_fp)
 
 display(p)
+
+
+ekin = (3/2) * kb * (nrho["O"] + nrho["O2"]) .* T
+erot = kb * nrho["O2"] .* T
+evib = [nrho["O2"][i] *kb * 2256.0 / (exp(2256.0/T[i]) - 1) for i in eachindex(T)]
+
+p = plot(t, (ekin + erot + evib) / (ekin[begin] + erot[begin] + evib[begin]))
+
+display(p)
+
+println(typeof(evib))
