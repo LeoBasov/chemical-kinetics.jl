@@ -14,7 +14,7 @@ set_T!(10000)
 set_nrho!(1e23)
 #set_relax_mode!("variable")
 
-execute!(5e-4)
+execute!(1.5e-5)
 
 t, T = get_T(300)
 t, T_O2 = get_Tvib(300, "O2")
