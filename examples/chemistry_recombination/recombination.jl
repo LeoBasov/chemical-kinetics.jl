@@ -29,11 +29,20 @@ Tvib_fp_O2 = fp_data.data[1]["c_red_tvib_O2"]
 nrho_O_fp = fp_data.data[1]["c_red_nrho_O"]
 nrho_O2_fp = fp_data.data[1]["c_red_nrho_O2"]
 
+ke_O = fp_data.data[1]["c_red_ke[1]"]
+ke_O2 = fp_data.data[1]["c_red_ke[2]"]
+
+erot_O = fp_data.data[1]["c_red_erot[1]"]
+erot_O2 = fp_data.data[1]["c_red_erot[2]"]
+
+evib_O = fp_data.data[1]["c_red_evib[1]"]
+evib_O2 = fp_data.data[1]["c_red_evib[2]"]
+
 p = plot(t, T)
 plot!(t, T_O2)
 plot!(t_fp, T_fp)
 plot!(t_fp, Tvib_fp_O2)
-ylims!(1000, 11000)
+#ylims!(1000, 11000)
 xlims!(0, 1.5e-5)
 
 display(p)
@@ -47,13 +56,17 @@ plot!(t_fp, nrho_O2_fp)
 
 display(p)
 
+println(length(ke_O))
+println(length(nrho_O_fp))
 
-ekin = (3/2) * kb * (nrho["O"] + nrho["O2"]) .* T
-erot = kb * nrho["O2"] .* T
-evib = [nrho["O2"][i] *kb * 2256.0 / (exp(2256.0/T[i]) - 1) for i in eachindex(T)]
 
-p = plot(t, (ekin + erot + evib) / (ekin[begin] + erot[begin] + evib[begin]))
+ekin = nrho_O_fp.*ke_O + nrho_O2_fp.*ke_O2
+erot = nrho_O_fp.*erot_O + nrho_O2_fp.*erot_O2
+evib = nrho_O_fp.*evib_O + nrho_O2_fp.*evib_O2
+
+p = plot(t_fp, ((ekin + erot + evib) / (ekin[begin] + erot[begin] + evib[begin]) - ones(length(ekin))))
+
+xlabel!(L"t / s")
+ylabel!(L"\frac{e_{tot} - e_{0}}{e_{0}}")
 
 display(p)
-
-println(typeof(evib))
