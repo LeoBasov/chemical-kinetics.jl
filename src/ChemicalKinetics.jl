@@ -306,6 +306,10 @@ function print_state()
     for key in keys(_state.mole_fractions)
         println(key, ": ", _state.mole_fractions[key])
     end
+
+    for reaction in _state.reactions
+        println(reaction.stochio_coeff)
+    end
 end
 
 end # module ChemicalKinetics
