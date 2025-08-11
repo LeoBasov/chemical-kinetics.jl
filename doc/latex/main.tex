@@ -2,6 +2,7 @@
 \usepackage{graphicx} % Required for inserting images
 \usepackage{amsmath}
 \usepackage{physics}
+\usepackage{siunitx} 
 
 \title{Chemical Reactor}
 \author{Leo Basov}
@@ -43,5 +44,65 @@ We have
 	\pdv{e_{kr, i}}{t} &= -\sum_m \pdv{e_{v, i, m}}{t}\\
 	\frac{\partial e_{v, i, m}}{\partial t} &= \frac{e_{v, i, m}(T) - e_{v, i, m}(T_{i,m})}{\tau_{i, m}}
 \end{align}
+
+\chapter{Fundamentals}
+Given a closed system of constant volume the total energy of the system $E$ is given as
+\begin{equation}
+	E = \sum_{s = 1}^{N_s} e_s n_s
+\end{equation}
+where $e_s$ is the energy of a particle of species $s$ and $n_s$ is the number density of said species.
+The total energy has the unit $[E] = \si{\joule\per\meter\cubed}$.
+The energy of a species consists of the kinetic energy $e_k$, the rotational energy $e_r$ and the vibrational energy $e_v$.
+It is assumed that the translational energy is in equilibrium between the individual species $e_{t, s} = e_t$ therefore we get
+\begin{equation}
+	E = e_t \sum_{s = 1}^{N_s} n_s + \sum_{s = 1}^{N_s} (e_{r, s} + e_{v, s}) n_s.
+\end{equation}
+For polyatomic species the vibrational energy is the sum of vibrational energies of individual modes $m$
+\begin{equation}
+	E = e_t \sum_{s = 1}^{N_s} n_s + \sum_{s = 1}^{N_s} \underbrace{\left(e_{r, s} + \sum_{m = 1}^{N_m} e_{v, s, m}\right)}_{e_{int, s}} n_s.
+\end{equation}
+
+Assuming chemical reactions the change of energy is
+\begin{equation}
+	\pdv{E}{t} = \dot{r}
+\end{equation}
+where $\dot{r}$ is the energy change due to chemical reactions
+\begin{equation}
+	\dot{r} = \sum_{r = 1}^{N_r} \nu_r \Delta e_r
+\end{equation}
+where $\nu_r$ is the rate of reaction $r$ and $\Delta e_r$ is the energy release of said reaction.
+The reaction rate is give as $[\nu_r] = \mathrm{reaction}\,\si{\per\second\per\meter\cubed}$ and $[\Delta e_r] = \si{\joule}$.
+The total change of the energy in time is
+\begin{align}
+	\pdv{E}{t} &= \pdv{e_t}{t} \sum_{s = 1}^{N_s} n_s + e_t \sum_{s = 1}^{N_s} \pdv{n_s}{t} + \sum_{s = 1}^{N_s} \pdv{e_{int, s}}{t} n_s + \sum_{s = 1}^{N_s} e_{int, m} \pdv{n_s}{t}\\
+	&= \pdv{e_t}{t} \sum_{s = 1}^{N_s} n_s + \sum_{s = 1}^{N_s} \pdv{e_{int, s}}{t} n_s + \sum_{s = 1}^{N_s} e_{s} \pdv{n_s}{t}.
+\end{align}
+
+The change of number density in time is given as
+\begin{equation}
+	\pdv{n_s}{t} = \sum_{r = 1}^{N_r} \nu_r \alpha_{r, s}
+\end{equation}
+where $\alpha_{r, s}$ is the stoichiometric coefficient of species $s$ in reaction $r$.
+
+The change of an internal energy mode being it rotational or vibrational is given as
+\begin{equation}
+	\pdv{e_m}{t} = \frac{e_m(T) - e_m}{\tau_m}
+\end{equation}
+where $\tau_m$ is the relaxation time of mode $m$ and $T$ is the translational temperature given as
+\begin{equation}
+	e_t = \frac{3}{2}k_B T
+\end{equation}
+i.e.
+\begin{equation}
+	T = \frac{2}{3}\frac{e_t}{k_B}.
+\end{equation}
+The change of tranlational energy is therefore given as
+\begin{equation}
+	\pdv{e_t}{t} = -\frac{\sum_{s = 1}^{N_s} \partial_t e_{int, s} n_s + \sum_{s = 1}^{N_s} e_{s} \partial_t n_s}{\sum_{s = 1}^{N_s} n_s}
+\end{equation}
+Using $n_{tot} = \sum_{s = 1}^{N_s} n_s$ we can write
+\begin{equation}
+	\pdv{e_t}{t} = -\frac{1}{n_{tot}}\sum_{s = 1}^{N_s} \left( \pdv{e_{int, s}}{t} n_s +  e_{s} \pdv{n_s}{t} \right).
+\end{equation}
 
 \end{document}
