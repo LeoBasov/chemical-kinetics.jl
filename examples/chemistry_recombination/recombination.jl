@@ -12,7 +12,7 @@ add_reactions!("examples/chemistry_recombination/recombination.json")
 
 set_T!(10000)
 set_nrho!(1e23)
-#set_relax_mode!("variable")
+set_relax_mode!("variable")
 
 execute!(1e-4)
 

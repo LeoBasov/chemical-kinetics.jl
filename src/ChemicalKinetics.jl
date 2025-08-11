@@ -59,7 +59,7 @@ function get_nrho(N)
         push!(t, tt * t_tilde)
 
         for species in _state.species
-            push!(nrho[species.first], _solution(tt)[1 + _state.nrho_offset[species.first]])
+            push!(nrho[species.first], _solution(tt)[1 + _state.nrho_offset[species.first]] * _state.nrho)
         end
     end
 
@@ -111,12 +111,13 @@ function get_energies(N)
 end
 
 function get_T(N)
+    Tfrac = calc_Tfrac(_state)
     t = []
     T = []
 
     for tt in range(0, _tmax, N)
         push!(t, tt)
-        push!(T, _solution(tt)[1])
+        push!(T, _solution(tt)[1] * Tfrac)
     end
 
     return t * t_tilde, T
@@ -139,7 +140,7 @@ function get_Tvib(N, species_name)
             nrho_spec = _solution(tt)[1 + _state.nrho_offset[species_name]]
             theta = _state.species[species_name].vibmodes[i].theta
             degen = _state.species[species_name].vibmodes[i].degen
-            f(x, p = (1, 1)) = calc_evib_kb(x, p) - _solution(tt)[i + _state.evib_offset[species_name]] / nrho_spec
+            f(x, p = (1, 1)) = calc_evib_kb(x, p) - _solution(tt)[i + _state.evib_offset[species_name]]
             Z = ZeroProblem(f, 1000)
             Tvib = solve(Z, Order1(), p=(theta, degen))
 
