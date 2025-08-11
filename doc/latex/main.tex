@@ -105,4 +105,15 @@ Using $n_{tot} = \sum_{s = 1}^{N_s} n_s$ we can write
 	\pdv{e_t}{t} = -\frac{1}{n_{tot}}\sum_{s = 1}^{N_s} \left( \pdv{e_{int, s}}{t} n_s +  e_{s} \pdv{n_s}{t} \right).
 \end{equation}
 
+\section{$T_t = T_r$}
+Assuming $T_t = T_r$ we have
+\begin{equation}
+	e_{tr} = T k_b \left(\frac{3}{2} + \sum_s \frac{\xi_s}{2}\right) 
+\end{equation}
+where $\xi_s$ is the number of rotational degrees of freedom of species $s$.
+Therefore we have
+\begin{equation}
+	T = \frac{2}{3 + \xi_r} \frac{e_{tr}}{k_B}
+\end{equation}
+
 \end{document}
