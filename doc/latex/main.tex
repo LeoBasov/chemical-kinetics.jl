@@ -3,6 +3,7 @@
 \usepackage{amsmath}
 \usepackage{physics}
 \usepackage{siunitx} 
+\usepackage{color,soul}
 
 \title{Chemical Reactor}
 \author{Leo Basov}
@@ -98,22 +99,22 @@ i.e.
 \end{equation}
 The change of tranlational energy is therefore given as
 \begin{equation}
-	\pdv{e_t}{t} = -\frac{\sum_{s = 1}^{N_s} \partial_t e_{int, s} n_s + \sum_{s = 1}^{N_s} e_{s} \partial_t n_s}{\sum_{s = 1}^{N_s} n_s}
+	\pdv{e_t}{t} = -\frac{\sum_{s = 1}^{N_s} \partial_t e_{int, s} n_s + \sum_{s = 1}^{N_s} e_{s} \partial_t n_s}{\sum_{s = 1}^{N_s} n_s} + \dot{r}.
 \end{equation}
 Using $n_{tot} = \sum_{s = 1}^{N_s} n_s$ we can write
 \begin{equation}
-	\pdv{e_t}{t} = -\frac{1}{n_{tot}}\sum_{s = 1}^{N_s} \left( \pdv{e_{int, s}}{t} n_s +  e_{s} \pdv{n_s}{t} \right).
+	\pdv{e_t}{t} = -\frac{1}{n_{tot}}\sum_{s = 1}^{N_s} \left( \pdv{e_{int, s}}{t} n_s +  e_{s} \pdv{n_s}{t} \right) + \frac{1}{n_{tot}}\dot{r}.
 \end{equation}
 
 \section{$T_t = T_r$}
 Assuming $T_t = T_r$ we have
 \begin{equation}
-	e_{tr} = T k_b \left(\frac{3}{2} + \sum_s \frac{\xi_s}{2}\right) 
+	\pdv{e_t}{t}n_{tot} + \sum_{s = 1}^{N_s}\pdv{e_{r, s}}{t} n_s = -\sum_{s = 1}^{N_s} \left( \pdv{e_{v, s}}{t} n_s +  e_{s} \pdv{n_s}{t} \right)  + \dot{r}.
 \end{equation}
-where $\xi_s$ is the number of rotational degrees of freedom of species $s$.
-Therefore we have
+and then
 \begin{equation}
-	T = \frac{2}{3 + \xi_r} \frac{e_{tr}}{k_B}
+	T\left(\frac{3}{2}n_{tot} + \sum_{s = 1}^{N_s}\frac{\xi_s}{2} n_s\right) = -\sum_{s = 1}^{N_s} \left( \pdv{e_{v, s}}{t} n_s +  e_{s} \pdv{n_s}{t} \right)  + \dot{r}.
 \end{equation}
+
 
 \end{document}
