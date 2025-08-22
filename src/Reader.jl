@@ -1,4 +1,6 @@
 using JSON
+using CSV
+using DataFrames
 
 mutable struct SPARTAlog
     dt::Float64
@@ -189,4 +191,8 @@ function read_SPARTA_log(file_path)
     log.data = _read_data(file_path)
 
     return log
+end
+
+function read_csv(file_name)
+    return CSV.read(file_name, DataFrame)
 end
