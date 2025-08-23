@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.0] - 2025-08-25
+
+### Added
+
+- ability to read csv files
+
 ## [0.9.2] - 2025-05-07
 
 ### Fixed
