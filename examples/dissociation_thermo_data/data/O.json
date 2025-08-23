@@ -1,0 +1,22 @@
+{
+    "name": "O",
+    "mass": 2.65E-26,
+    "vhs": {
+        "dref": 3.0E-10,
+        "Tref": 273.15,
+        "omega": 0.8,
+        "alpha": 1.0,
+        "Zrotinf": 0.0,
+        "T*": 0.0,
+        "C1": 0.0,
+        "C2": 0.0
+    },
+    "rotation": {
+        "dof": 0,
+        "Z": 0
+    },
+    "vibration":{
+        "dof": 0,
+        "modes": []
+    }
+}

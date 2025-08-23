@@ -3,14 +3,14 @@ using ChemicalKinetics
 # simulation setup and execution
 initialize!()
 
-add_species!("data/O.json", mole_frac = 0.2)
-add_species!("data/O2.json", mole_frac = 0.8)
+add_species!("examples/dissociation_thermo_data/data/O.json", mole_frac = 0.2)
+add_species!("examples/dissociation_thermo_data/data/O2.json", mole_frac = 0.8)
 
-add_reactions!("examples/dissociation_thermo_data/reactions.json")
+add_reactions!("examples/dissociation_thermo_data/data/reactions.json")
 
 set_T!(10000)
 set_nrho!(1e23)
-set_relax_mode!("variable")
+#set_relax_mode!("variable")
 
 execute!(3e-4)
 
