@@ -109,4 +109,10 @@ end
 
     @test length(species_O2.thermo_data.T) == length(species_O2.thermo_data.dH)
     @test 52 == length(species_O2.thermo_data.T)
+
+    @test 50 == species_O2.thermo_data.T[begin]
+    @test 50000 == species_O2.thermo_data.T[end]
+
+    @test 1449.40 / ChemicalKinetics.N_A == species_O2.thermo_data.dH[begin]
+    @test 1498200.00 / ChemicalKinetics.N_A == species_O2.thermo_data.dH[end]
 end

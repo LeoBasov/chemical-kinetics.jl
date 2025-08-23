@@ -49,7 +49,7 @@ function read_species(file_name)
 
             for i in eachindex(json["thermo"]["T"])
                 push!(species.thermo_data.T, json["thermo"]["T"][i])
-                push!(species.thermo_data.dH, json["thermo"]["dH"][i])
+                push!(species.thermo_data.dH, json["thermo"]["dH"][i] / N_A)
             end
         end
     end
