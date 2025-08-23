@@ -30,7 +30,7 @@ function f(u, state, t)
         end
 
         nu *= t_tilde
-        du[1] += nu * Tfrac * -1.5 * interp(T) / kb # THIS IS A HACK
+        du[1] += nu * Tfrac * -interp(T) / kb # THIS IS A HACK
 
         for species_name in keys(reaction.stochio_coeff)
             du[1 + state.nrho_offset[species_name]] += reaction.stochio_coeff[species_name] * nu
