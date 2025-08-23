@@ -1,5 +1,6 @@
 using DifferentialEquations
 using Roots
+using Interpolations
 
 function calc_coll_number(T::Float64, spec_data::VHS)
     spec_data.C1 * exp(spec_data.C2 * T^(-1.0/3.0)) * T^(-spec_data.omega)
@@ -10,6 +11,10 @@ function f(u, state, t)
     du = zeros(length(u))
     Tfrac = calc_Tfrac(u, state)
     nrho = 0.0
+
+    # THIS IS A HACK
+    O2_spec = state.species["O2"]
+    interp = linear_interpolation(O2_spec.thermo_data.T, O2_spec.thermo_data.dH)
 
     for species in state.species
         nrho += u[1 + state.nrho_offset[species.first]]
@@ -25,7 +30,7 @@ function f(u, state, t)
         end
 
         nu *= t_tilde
-        du[1] += nu * Tfrac * reaction.DeltaE / kb
+        du[1] += nu * Tfrac * -1.5 * interp(T) / kb # THIS IS A HACK
 
         for species_name in keys(reaction.stochio_coeff)
             du[1 + state.nrho_offset[species_name]] += reaction.stochio_coeff[species_name] * nu

@@ -1,4 +1,6 @@
 using ChemicalKinetics
+using Plots
+using LaTeXStrings
 
 # simulation setup and execution
 initialize!()
@@ -32,8 +34,8 @@ display(p)
 
 p = plot(t, nrho["O2"], label=L"\mathrm{O}_2 - \mathrm{conti}")
 plot!(t, nrho["O"], label=L"\mathrm{O} - \mathrm{conti}")
-plot!(cantera_data.t/1000, cantera_data.yO2.*cantera_data.rho/5.31E-26, label=L"\mathrm{O}_2 - \mathrm{Cantera}")
-plot!(cantera_data.t/1000, cantera_data.yO.*cantera_data.rho/2.65E-26, label=L"\mathrm{O} - \mathrm{Cantera}", xlim=(0, t_max))
+plot!(cantera_data.t/1000, cantera_data.yO2.*cantera_data.rho/5.31E-26, label=L"\mathrm{O}_2 - \mathrm{Cantera}", line = (2, :dash))
+plot!(cantera_data.t/1000, cantera_data.yO.*cantera_data.rho/2.65E-26, label=L"\mathrm{O} - \mathrm{Cantera}", xlim=(0, t_max), line = (2, :dash))
 
 
 xlabel!(L"t\,/\,\mathrm{s}")
