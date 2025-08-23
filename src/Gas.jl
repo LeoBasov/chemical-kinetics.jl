@@ -36,6 +36,15 @@ mutable struct Vibmode
     end
 end
 
+mutable struct ThermoData
+    T::Vector
+    dH::Vector
+
+    function ThermoData()
+        new([], [])
+    end
+end
+
 mutable struct Species
     name::String
     mass::Float64
@@ -44,9 +53,10 @@ mutable struct Species
     Zrot::Int
     vhs::VHS
     vibmodes::Vector{Vibmode}
+    thermo_data::ThermoData
 
     function Species()
-        new("", 1.0, 0.0, 0.0, 0, VHS(), [])
+        new("", 1.0, 0.0, 0.0, 0, VHS(), [], ThermoData())
     end
 end
 

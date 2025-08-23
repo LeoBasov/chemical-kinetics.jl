@@ -104,4 +104,9 @@ end
     @test 1 == length(log.data)
     @test 32 == length(log.data[1])
     @test 401 == length(log.data[1]["Step"])
+
+    species_O2 = ChemicalKinetics.read_species("../data/O2.json")
+
+    @test length(species_O2.thermo_data.T) == length(species_O2.thermo_data.dH)
+    @test 52 == length(species_O2.thermo_data.T)
 end

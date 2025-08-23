@@ -41,6 +41,17 @@ function read_species(file_name)
             
             push!(species.vibmodes, vibmode)
         end
+
+        if haskey(json, "thermo")
+            if length(json["thermo"]["T"]) != length(json["thermo"]["dH"])
+                throw("legths of vectors for T and dH not equal in thermo data")
+            end
+
+            for i in eachindex(json["thermo"]["T"])
+                push!(species.thermo_data.T, json["thermo"]["T"][i])
+                push!(species.thermo_data.dH, json["thermo"]["dH"][i])
+            end
+        end
     end
 
     return species
