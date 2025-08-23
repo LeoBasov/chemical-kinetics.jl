@@ -12,22 +12,29 @@ set_T!(10000)
 set_nrho!(1e23)
 #set_relax_mode!("variable")
 
-execute!(3e-4)
+t_max = 1e-4
+execute!(t_max)
 
 t, T = get_T(300)
 t, Tvib = get_Tvib(300, "O2")
 t, nrho = get_nrho(300)
 
-p = plot(t, T, label=L"T")
-plot!(t, Tvib, label=L"T_{\mathrm{vib}}")
+cantera_data = read_csv("examples/dissociation_thermo_data/data/can.csv")
+
+p = plot(t, T, label=L"T - \mathrm{conti}")
+plot!(t, Tvib, label=L"T_{\mathrm{vib}} - \mathrm{conti}")
+plot!(cantera_data.t/1000, cantera_data.T, label=L"T - \mathrm{Cantera}")
 
 xlabel!(L"t\,/\,\mathrm{s}")
-ylabel!(L"T\,/\,\mathrm{K}")
+ylabel!(L"T\,/\,\mathrm{K}", xlim=(0, t_max))
 
 display(p)
 
-p = plot(t, nrho["O2"], label=L"\mathrm{O}_2")
-plot!(t, nrho["O"], label=L"\mathrm{O}")
+p = plot(t, nrho["O2"], label=L"\mathrm{O}_2 - \mathrm{conti}")
+plot!(t, nrho["O"], label=L"\mathrm{O} - \mathrm{conti}")
+plot!(cantera_data.t/1000, cantera_data.yO2.*cantera_data.rho/5.31E-26, label=L"\mathrm{O}_2 - \mathrm{Cantera}")
+plot!(cantera_data.t/1000, cantera_data.yO.*cantera_data.rho/2.65E-26, label=L"\mathrm{O} - \mathrm{Cantera}", xlim=(0, t_max))
+
 
 xlabel!(L"t\,/\,\mathrm{s}")
 ylabel!(L"n\,/\,\mathrm{m}^{-3}")
