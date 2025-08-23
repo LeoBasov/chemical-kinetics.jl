@@ -1,9 +1,11 @@
 name = "ChemicalKinetics"
 uuid = "929da9e8-5203-495f-90b2-577e54eea2cc"
 authors = ["Leo Basov <leo.basov@dlr.de>"]
-version = "0.9.2"
+version = "0.10.0"
 
 [deps]
+CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 DifferentialEquations = "0c46a032-eb83-5123-abaf-570d42b7fbaa"
 JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
 LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
@@ -14,6 +16,8 @@ Roots = "f2b01f46-fcfa-551c-844a-d8ac1e96c665"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [compat]
+CSV = "0.10.15"
+DataFrames = "1.7.0"
 DifferentialEquations = "7.15.0"
 JSON = "0.21.4"
 LaTeXStrings = "1.4.0"
