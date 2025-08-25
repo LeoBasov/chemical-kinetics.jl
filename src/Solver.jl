@@ -12,10 +12,6 @@ function f(u, state, t)
     Tfrac = calc_Tfrac(u, state)
     nrho = 0.0
 
-    # THIS IS A HACK
-    O2_spec = state.species["O2"]
-    interp = linear_interpolation(O2_spec.thermo_data.T, O2_spec.thermo_data.dH)
-
     for species in state.species
         nrho += u[1 + state.nrho_offset[species.first]]
     end
@@ -30,7 +26,20 @@ function f(u, state, t)
         end
 
         nu *= t_tilde
-        du[1] += nu * Tfrac * -interp(T) / kb # THIS IS A HACK
+        
+        if state.constant_reaction_enthalpy == true
+            du[1] += nu * Tfrac * reaction.DeltaE / kb
+        else
+            DeltaE = 0.0
+
+            for species_name in keys(reaction.stochio_coeff)
+                spec = state.species[species_name]
+                interp = linear_interpolation(spec.thermo_data.T, spec.thermo_data.dH)
+                DeltaE += interp(T) * reaction.stochio_coeff[species_name]
+            end
+
+            du[1] += nu * Tfrac * DeltaE / kb
+        end
 
         for species_name in keys(reaction.stochio_coeff)
             du[1 + state.nrho_offset[species_name]] += reaction.stochio_coeff[species_name] * nu
