@@ -35,7 +35,7 @@ function f(u, state, t)
             for species_name in keys(reaction.stochio_coeff)
                 spec = state.species[species_name]
                 interp = linear_interpolation(spec.thermo_data.T, spec.thermo_data.dH)
-                DeltaE += interp(T) * reaction.stochio_coeff[species_name]
+                DeltaE -= interp(T) * reaction.stochio_coeff[species_name]
             end
 
             du[1] += nu * Tfrac * DeltaE / kb
