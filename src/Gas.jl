@@ -69,10 +69,11 @@ mutable struct State
     evib_offset::Dict{String, Integer}
     nrho_offset::Dict{String, Integer}
     reactions::Vector{Reaction}
-    constant_relax_mode::Bool 
+    constant_relax_mode::Bool
+    constant_reaction_enthalpy::Bool
 
     function State()
-        return new(1.0, 1.0, Dict(), Dict(), Dict(), Dict(), Dict(), [], true)
+        return new(1.0, 1.0, Dict(), Dict(), Dict(), Dict(), Dict(), [], true, true)
     end
 end
 

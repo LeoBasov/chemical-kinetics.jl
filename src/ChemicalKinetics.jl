@@ -7,6 +7,7 @@ export set_Zvib!
 export set_molefrac!
 export add_species!
 export set_relax_mode!
+export set_reaction_enthalpy_mode!
 export print_state
 export initialize!
 export execute!
@@ -290,6 +291,18 @@ function set_relax_mode!(mode::String)
     end
 
     _print("set relax mode to: [" * mode * "]")
+end
+
+function set_reaction_enthalpy_mode!(mode::String)
+    if mode == "constant"
+        _state.constant_reaction_enthalpy = true
+    elseif mode == "variable"
+        _state.constant_reaction_enthalpy = false
+    else
+        error("undefined reaction enthalpy mode: [" * mode * "]")
+    end
+
+    _print("set reaction enthalpy mode to: [" * mode * "]")
 end
 
 function add_species!(file_name; mole_frac = 0.0)

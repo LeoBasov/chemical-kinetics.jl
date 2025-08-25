@@ -1,6 +1,7 @@
 using ChemicalKinetics
 using Plots
 using LaTeXStrings
+using Revise
 
 # simulation setup and execution
 initialize!()
@@ -13,6 +14,7 @@ add_reactions!("examples/dissociation_thermo_data/data/reactions.json")
 set_T!(10000)
 set_nrho!(1e23)
 #set_relax_mode!("variable")
+set_reaction_enthalpy_mode!("constant")
 
 t_max = 1e-4
 execute!(t_max)
