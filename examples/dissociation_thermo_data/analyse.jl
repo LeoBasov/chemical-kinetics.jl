@@ -57,11 +57,29 @@ dE_O_dt = cald_du_dt(t, E_O)
 dE_O2_dt = cald_du_dt(t, E_O2)
 
 dE = dE_O_dt + dE_O2_dt
+dH = dE ./ dnrho_O2_dt * N_A / nu_O
 
-p = plot(T, dE ./ dnrho_O2_dt * N_A / nu_O, label="cantera")
+p = plot(T, dH, label="cantera")
 plot!(T_ref, Delta_h_H_ref, seriestype=:scatter, label="ESA STR 246")
 xlabel!(L"T\,/\,\mathrm{K}")
 ylabel!(L"\Delta_f \mathrm{H}\,/\,\mathrm{J}\,\,\mathrm{mol}^{-1}")
 display(p)
+
+M = zeros(length(T), 2)
+
+for i in eachindex(T)
+    M[i, 1] = T[i]
+    M[i, 2] = dH[i]
+end
+
+sort!(M, dims = 1)
+
+interp = linear_interpolation(M[:, 1], M[:, 2])
+
+for temp in range(2000, step=500, length=16)
+    println(temp, " ", interp(temp))
+end
+
+println(9999, " ", interp(9999))
 
 println("done")
