@@ -68,8 +68,8 @@ function write2csv(file_prefix, N = 1000)
                 end
             end
 
-            for k in 1:length(_state.species)
-                str *= "," * string(nrho[k][i])
+            for species in _state.species
+                str *= "," * string(nrho[species.first][i])
             end
 
             write(file, str * "\n")
