@@ -37,6 +37,10 @@ const mO = 2.65E-26
 const mO2 = 5.31E-26
 const theta = 2256.0
 const N_A = 6.02214076e23
+const nu_O = 2 # stochiometric coefficient in O2 + O -> 3O
+
+T_ref = [10000, 8000, 6000, 4000, 2000]
+Delta_h_H_ref = [2.621e5, 2.589e5, 2.580e5, 2.573e5, 2.553e5]
 
 cantera_data = CSV.read("examples/dissociation_thermo_data/data/can.csv", DataFrame)
 t = cantera_data.t/1000
@@ -52,8 +56,12 @@ dnrho_O2_dt = cald_du_dt(t, nrho_O2)
 dE_O_dt = cald_du_dt(t, E_O)
 dE_O2_dt = cald_du_dt(t, E_O2)
 
-dE = dE_O_dt.*nrho_O + E_O.*dnrho_O_dt + dE_O2_dt.*nrho_O2 + E_O2.*dnrho_O2_dt
+dE = dE_O_dt + dE_O2_dt
 
-display(plot(T, dE./dnrho_O2_dt))
+p = plot(T, dE ./ dnrho_O2_dt * N_A / nu_O, label="cantera")
+plot!(T_ref, Delta_h_H_ref, seriestype=:scatter, label="ESA STR 246")
+xlabel!(L"T\,/\,\mathrm{K}")
+ylabel!(L"\Delta_f \mathrm{H}\,/\,\mathrm{J}\,\,\mathrm{mol}^{-1}")
+display(p)
 
 println("done")
